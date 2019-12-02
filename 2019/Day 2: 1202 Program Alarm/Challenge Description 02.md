@@ -57,7 +57,7 @@ Once you have a working computer, the first step is to restore the gravity assis
     3765464
 </details>
 
---- Part Two ---
+**--- Part Two ---**
 
 "Good, the new computer seems to be working correctly! Keep it nearby during this mission - you'll probably use it again. Real Intcode computers support many more features than your new one, but we'll let you know what they are as you need them."
 
