@@ -29,7 +29,7 @@ What is the sum of the fuel requirements for all of the modules on your spacecra
 
 </details>
 
---- Part Two ---
+**--- Part Two ---**
 
 During the second Go / No Go poll, the Elf in charge of the Rocket Equation Double-Checker stops the launch sequence. Apparently, you forgot to include additional fuel for the fuel you just added.
 
