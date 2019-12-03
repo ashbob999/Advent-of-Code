@@ -1,7 +1,7 @@
 # link to Day 1: https://adventofcode.com/2015/day/1
 
 # splits the input file into a list of lines
-with open("inputs/Day_2_Input.txt.txt", "r") as file:
+with open("inputs/Day_2_Input.txt", "r") as file:
     lines = [line.strip() for line in file]
 
 instructions = lines[0]
