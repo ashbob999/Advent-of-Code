@@ -1,4 +1,9 @@
---- Day 4: Secure Container ---
+**--- Day 4: Secure Container ---**
+
+[Program input](Data_04.txt)<br>
+[Solution](Code_04.py)
+
+**--- Part One ---**
 
 You arrive at the Venus fuel depot only to discover it's protected by a password. The Elves had written the password on a sticky note, but someone threw it out.
 
@@ -17,8 +22,14 @@ Other than the range rule, the following are true:
 
 How many different passwords within the range given in your puzzle input meet these criteria?
 
-Your puzzle answer was 2814.
---- Part Two ---
+<details>
+    <summary>Your puzzle answer was</summary>
+    
+    2814
+</details>
+___
+
+**--- Part Two ---**
 
 An Elf just remembered one more important detail: the two adjacent matching digits are not part of a larger group of matching digits.
 
@@ -30,4 +41,8 @@ Given this additional criterion, but still ignoring the range rule, the followin
 
 How many different passwords within the range given in your puzzle input meet all of the criteria?
 
-Your puzzle answer was 1991.
+<details>
+    <summary>Your puzzle answer was</summary>
+    
+    1991
+</details>
