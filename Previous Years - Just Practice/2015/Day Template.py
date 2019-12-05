@@ -1,4 +1,4 @@
-# link to Day 1: https://adventofcode.com/2015/day/X
+# link to Day 1: https://adventofcode.com/20XX/day/X
 
 # splits the input file into a list of lines
 with open("inputs/Day_X_Input.txt", "r") as file:
