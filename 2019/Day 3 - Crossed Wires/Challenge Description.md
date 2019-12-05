@@ -1,7 +1,7 @@
 
 **--- Day 3: Crossed Wires ---**
 
-[Program input](Data_03.txt)<br>
+[Program input](../resources/Day_02_Inputs.txt)<br>
 [Solution](Code_03.py)
 
 ___

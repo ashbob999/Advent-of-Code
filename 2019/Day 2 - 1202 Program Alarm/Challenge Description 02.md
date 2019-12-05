@@ -1,7 +1,7 @@
 
 **--- Day 2: 1202 Program Alarm ---**
 
-[Program Input](Data_02.txt)<br>
+[Program Input](../resources/Day_02_Inputs.txt)<br>
 [Solution](Code_02.py)
 
 ___

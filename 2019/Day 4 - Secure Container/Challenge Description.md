@@ -1,6 +1,6 @@
 **--- Day 4: Secure Container ---**
 
-[Program input](Data_04.txt)<br>
+[Program input](../resources/Day_04_Inputs.txt)<br>
 [Solution](Code_04.py)
 
 **--- Part One ---**

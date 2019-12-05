@@ -1,7 +1,7 @@
 
 **--- Day 1: The Tyranny of the Rocket Equation ---**
 
-[Program Input](Data_01.txt) <br>
+[Program Input](../resources/Day_01_Inputs.txt) <br>
 [Solution](Code_01.py)
 
 ___

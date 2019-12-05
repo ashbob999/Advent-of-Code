@@ -1,6 +1,6 @@
 **--- Day 5: Sunny with a Chance of Asteroids ---**
 
-[Program input](Data_05.txt)<br>
+[Program input](../resources/Day_05_Inputs.txt)<br>
 [Solution](Code_05.py)
 
 ___
