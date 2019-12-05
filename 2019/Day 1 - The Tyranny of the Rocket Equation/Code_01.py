@@ -1,4 +1,4 @@
-with open("Day_01_data.txt", "r") as file:
+with open("Data_01.txt", "r") as file:
     masses = [int(line.strip()) for line in file]
 
 # part 1
