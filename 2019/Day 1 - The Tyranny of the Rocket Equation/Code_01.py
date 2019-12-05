@@ -1,5 +1,11 @@
-with open("Data_01.txt", "r") as file:
-    masses = [int(line.strip()) for line in file]
+from util import input_handler
+
+# link to Day X: https://adventofcode.com/2019/day/1
+
+# gets the input lines for the challenge
+lines = input_handler.get_input(1)
+
+masses = list(map(int, lines))
 
 # part 1
 

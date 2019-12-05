@@ -1,6 +1,9 @@
+from util import input_handler
+
+# link to Day X: https://adventofcode.com/2019/day/3
+
 # gets the input lines for the challenge
-with open("Data_03.txt", "r") as file:
-    lines = [line.strip() for line in file]
+lines = input_handler.get_input(3)
 
 
 def get_dirs(line):

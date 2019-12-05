@@ -1,8 +1,12 @@
 # link to Day 1: https://adventofcode.com/2019/day/5
 
+from util import input_handler
+
 # splits the input file into a list of lines
 with open("Data_05.txt", "r") as file:
     lines = [line.strip() for line in file]
+
+lines = input_handler.get_input(5)
 
 instructions = list(map(int, lines[0].split(",")))
 
@@ -30,7 +34,7 @@ program_outputs = []
 pc = 0
 
 while pc < len(instructions):
-    print(pc)
+    # print(pc)
     instruction = str(instructions[pc]).rjust(5, "0")  # pads out the instruction
 
     opcode = instruction[-2:]
@@ -55,7 +59,7 @@ while pc < len(instructions):
         # print("input")
         instructions[params[0]] = program_input_2
     elif opcode == "04":  # output
-        print("output")
+        # print("output")
         # print(instructions)
 
         program_outputs.append(params[0] if param_modes[2] == "1" else instructions[params[0]])
@@ -86,7 +90,7 @@ while pc < len(instructions):
 
         instructions[store_location] = 1 if value1 == value2 else 0
     elif opcode == "99":  # halt
-        print("halt")
+        # print("halt")
         break
 
     pc += opcode_params[opcode] + 1

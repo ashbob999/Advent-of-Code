@@ -1,6 +1,7 @@
+from util import input_handler
+
 # gets the input lines for the challenge
-with open("Data_02.txt", "r") as file:
-    lines = [line.strip() for line in file]
+lines = input_handler.get_input(2)
 
 preserved_opcodes = [int(code) for code in lines[0].split(",")]
 
