@@ -47,9 +47,6 @@ class IntCodeVM:
         self.running = True
 
         while self.running:
-            # print(self.pc)
-            # print(self.instructions[self.pc:self.pc+3])
-            # print("226: ", self.instructions[226], "  677: ", self.instructions[677])
 
             instruction = str(self.instructions[self.pc]).rjust(5, "0")  # pads out the instruction
 
@@ -162,7 +159,6 @@ class IntCodeVM:
                 # print("halt")
                 break
 
-            # print("pc: ", self.pc, "  opcode: ", opcode, "  224: ",self.instructions[224])
             self.pc += self.opcode_params[opcode] + 1
         return self.program_outputs
 
@@ -173,7 +169,6 @@ class IntCodeVM:
 
     def get_addresses(self, params, param_modes):
         p_modes = param_modes[::-1]
-        # print("modes ",p_modes)
         addresses = [-1] * len(params)
 
         for i, param in enumerate(params):
@@ -185,25 +180,7 @@ class IntCodeVM:
             elif p_modes[i] == "2":
                 addresses[i] = self.rel_base + param
 
-        # print("addrs: ", addresses)
         return addresses
 
-    def set_dispatcher(self, disp):
-        self.disp = disp
-
-
-
-"""
-inputs = []
-vm = intcode(instr, inputs)
-#vm.run()
-print(vm.instructions[0:5])
-#3892695
- 
-
-phase = (9, 8, 5, 7, 6)
-disp = dispatcher(instr, 5, phase)
-disp.start(0)
-print("\n")
-print(disp.get_output())
-"""
+    def set_dispatcher(self, disp: amplifier_circuit.Dispatcher):
+        self.dispatcher = disp
