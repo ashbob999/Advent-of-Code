@@ -18,7 +18,7 @@ pad_list(instr, len(instr) * 10)
 # print(instr)
 input_value = 1
 
-vm = intcode_machine.intcode(instr, [input_value])
+vm = intcode_machine.IntCodeVM(instr, [input_value])
 vm.run()
 
 print("Part 1: ", vm.program_outputs)
@@ -26,7 +26,7 @@ print("Part 1: ", vm.program_outputs)
 # part 2
 input_value = 2
 
-vm = intcode_machine.intcode(instr, [input_value])
+vm = intcode_machine.IntCodeVM(instr, [input_value])
 vm.run()
 
 print("Part 2: ", vm.program_outputs)

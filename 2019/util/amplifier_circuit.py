@@ -1,7 +1,7 @@
 from util import intcode_machine
 
 
-class dispatcher:
+class Dispatcher:
     def __init__(self, instructions, amp_num, amp_phase):
         self.amp_num = amp_num
         self.amp_phase = amp_num
@@ -9,7 +9,7 @@ class dispatcher:
         self.vms = [None] * amp_num
 
         for i, v in enumerate(amp_phase):
-            self.vms[i] = intcode_machine.intcode(instructions, [v])
+            self.vms[i] = intcode_machine.IntCodeVM(instructions, [v])
             self.vms[i].set_dispatcher(self)
 
     def start(self, input: int = 0):

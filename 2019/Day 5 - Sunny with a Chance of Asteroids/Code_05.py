@@ -102,7 +102,7 @@ print("Part 2: ")
 # print("at 0: ", instructions[0])
 print("\n" * 3)
 
-ic = intcode_machine.IntCode(list(map(int, lines[0].split(","))))
+ic = intcode_machine.IntCodeVM(list(map(int, lines[0].split(","))))
 
 ic.set_input([1])
 

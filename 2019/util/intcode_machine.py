@@ -10,7 +10,7 @@ instr = list(map(int, lines[0].split(",")))
 """
 
 
-class intcode:
+class IntCodeVM:
     def __init__(self, instructions, inputs):
 
         self.instructions = instructions.copy()
