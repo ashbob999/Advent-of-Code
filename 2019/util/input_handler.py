@@ -1,4 +1,4 @@
-def get_input(day) -> list:
+def get_input(day: int) -> list:
     """
     Gets the data from the input file.
 
