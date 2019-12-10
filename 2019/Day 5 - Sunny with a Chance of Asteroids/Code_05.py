@@ -1,10 +1,6 @@
 # link to Day 1: https://adventofcode.com/2019/day/5
 
-from util import input_handler
-
-# splits the input file into a list of lines
-with open("Data_05.txt", "r") as file:
-    lines = [line.strip() for line in file]
+from util import input_handler, intcode_machine
 
 lines = input_handler.get_input(5)
 
@@ -102,3 +98,14 @@ print("Part 1: ")
 # Part 2
 
 print("Part 2: ")
+
+# print("at 0: ", instructions[0])
+print("\n" * 3)
+
+ic = intcode_machine.IntCode(list(map(int, lines[0].split(","))))
+
+ic.set_input([1])
+
+ic.run()
+
+print(ic.outputs)
