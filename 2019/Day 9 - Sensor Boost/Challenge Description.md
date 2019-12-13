@@ -1,5 +1,12 @@
 --- Day 9: Sensor Boost ---
 
+[Program input](../resources/Day_09_Inputs.txt)<br>
+[Solution](Code_09.py)
+
+___
+
+**--- Part One ---**
+
 You've just said goodbye to the rebooted rover and left Mars when you receive a faint distress signal coming from the asteroid belt. It must be the Ceres monitoring station!
 
 In order to lock on to the signal, you'll need to boost your sensors. The Elves send up the latest BOOST program - Basic Operation Of System Test.
@@ -8,19 +15,19 @@ While BOOST (your puzzle input) is capable of boosting your sensors, for tenuous
 
 Your existing Intcode computer is missing one key feature: it needs support for parameters in relative mode.
 
-Parameters in mode 2, relative mode, behave very similarly to parameters in position mode: the parameter is interpreted as a position. Like position mode, parameters in relative mode can be read from or written to.
+Parameters in mode `2`, relative mode, behave very similarly to parameters in position mode: the parameter is interpreted as a position. Like position mode, parameters in relative mode can be read from or written to.
 
 The important difference is that relative mode parameters don't count from address 0. Instead, they count from a value called the relative base. The relative base starts at 0.
 
 The address a relative mode parameter refers to is itself plus the current relative base. When the relative base is 0, relative mode parameters and position mode parameters with the same value refer to the same address.
 
-For example, given a relative base of 50, a relative mode parameter of -7 refers to memory address 50 + -7 = 43.
+For example, given a relative base of `50`, a relative mode parameter of `-7` refers to memory address `50 + -7 = 43`.
 
 The relative base is modified with the relative base offset instruction:
 
     Opcode 9 adjusts the relative base by the value of its only parameter. The relative base increases (or decreases, if the value is negative) by the value of the parameter.
 
-For example, if the relative base is 2000, then after the instruction 109,19, the relative base would be 2019. If the next instruction were 204,-34, then the value at address 1985 would be output.
+For example, if the relative base is `2000`, then after the instruction `109,19`, the relative base would be `2019`. If the next instruction were `204,-34`, then the value at address `1985` would be output.
 
 Your Intcode computer will also need a few other capabilities:
 
@@ -37,8 +44,15 @@ The BOOST program will ask for a single input; run it in test mode by providing 
 
 Once your Intcode computer is fully functional, the BOOST program should report no malfunctioning opcodes when run in test mode; it should only output a single value, the BOOST keycode. What BOOST keycode does it produce?
 
-Your puzzle answer was 3765554916.
---- Part Two ---
+<displaye>
+    <summary>Your puzzle answer was</summary>
+    
+    3765554916
+</displaye>
+
+___
+
+**--- Part Two ---**
 
 You now have a complete Intcode computer.
 
@@ -48,4 +62,8 @@ The program runs in sensor boost mode by providing the input instruction the val
 
 Run the BOOST program in sensor boost mode. What are the coordinates of the distress signal?
 
-Your puzzle answer was 76642.
+<display>
+    <summary>Your puzzle answer was</summary>
+    
+    76642
+</display>

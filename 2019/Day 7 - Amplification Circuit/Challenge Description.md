@@ -1,12 +1,21 @@
 --- Day 7: Amplification Circuit ---
 
+[Program input](../resources/Day_07_Inputs.txt)<br>
+[Solution](Code_07.py)
+
+___
+
+**--- Part One ---**
+
 Based on the navigational maps, you're going to need to send more power to your ship's thrusters to reach Santa in time. To do this, you'll need to configure a series of amplifiers already installed on the ship.
 
 There are five amplifiers connected in series; each one receives an input signal and produces an output signal. They are connected such that the first amplifier's output leads to the second amplifier's input, the second amplifier's output leads to the third amplifier's input, and so on. The first amplifier's input value is 0, and the last amplifier's output leads to your ship's thrusters.
 
+```
     O-------O  O-------O  O-------O  O-------O  O-------O
 0 ->| Amp A |->| Amp B |->| Amp C |->| Amp D |->| Amp E |-> (to thrusters)
     O-------O  O-------O  O-------O  O-------O  O-------O
+```
 
 The Elves have sent you some Amplifier Controller Software (your puzzle input), a program that should run on your existing Intcode computer. Each amplifier will need to run a copy of the program.
 
@@ -16,7 +25,7 @@ The program will then call another input instruction to get the amplifier's inpu
 
 Your job is to find the largest output signal that can be sent to the thrusters by trying every possible combination of phase settings on the amplifiers. Make sure that memory is not shared or reused between copies of the program.
 
-For example, suppose you want to try the phase setting sequence 3,1,2,4,0, which would mean setting amplifier A to phase setting 3, amplifier B to setting 1, C to 2, D to 4, and E to 0. Then, you could determine the output signal that gets sent from amplifier E to the thrusters with the following steps:
+For example, suppose you want to try the phase setting sequence `3,1,2,4,0`, which would mean setting amplifier A to phase setting 3, amplifier B to setting 1, C to 2, D to 4, and E to 0. Then, you could determine the output signal that gets sent from amplifier E to the thrusters with the following steps:
 
     Start the copy of the amplifier controller software that will run on amplifier A. At its first input instruction, provide it the amplifier's phase setting, 3. At its second input instruction, provide it the input signal, 0. After some calculations, it will use an output instruction to indicate the amplifier's output signal.
     Start the software for amplifier B. Provide it the phase setting (1) and then whatever output signal was produced from amplifier A. It will then produce a new output signal destined for amplifier C.
@@ -44,11 +53,18 @@ Here are some example programs:
 
 Try every combination of phase settings on the amplifiers. What is the highest signal that can be sent to the thrusters?
 
-Your puzzle answer was 99376.
---- Part Two ---
+<display>
+    <summary>Your puzzle answer was</summary>
+    
+    99376
+</display>
+___
+
+**--- Part Two ---**
 
 It's no good - in this configuration, the amplifiers can't generate a large enough output signal to produce the thrust you'll need. The Elves quickly talk you through rewiring the amplifiers into a feedback loop:
 
+```
       O-------O  O-------O  O-------O  O-------O  O-------O
 0 -+->| Amp A |->| Amp B |->| Amp C |->| Amp D |->| Amp E |-.
    |  O-------O  O-------O  O-------O  O-------O  O-------O |
@@ -57,6 +73,7 @@ It's no good - in this configuration, the amplifiers can't generate a large enou
                                                             |
                                                             v
                                                      (to thrusters)
+```
 
 Most of the amplifiers are connected as they were before; amplifier A's output is connected to amplifier B's input, and so on. However, the output from amplifier E is now connected into amplifier A's input. This creates the feedback loop: the signal will be sent through the amplifiers many times.
 
@@ -83,4 +100,8 @@ Here are some example programs:
 
 Try every combination of the new phase settings on the amplifier feedback loop. What is the highest signal that can be sent to the thrusters?
 
-Your puzzle answer was 8754464.
+<display>
+    <summary>Your puzzle answer was</summary>
+    
+    8754464
+</display>
