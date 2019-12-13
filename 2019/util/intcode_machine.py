@@ -1,21 +1,16 @@
 from __future__ import annotations
 
-"""
-with open("Day 09/Data_09.txt", "r") as file:
-	lines = [line.strip() for line in file]
+from typing import List, Dict
 
-instr = list(map(int, lines[0].split(",")))
-#instr[1] = 12
-#instr[2] = 2
-"""
+from util import amplifier_circuit
 
 
 class IntCodeVM:
-    def __init__(self, instructions, inputs):
+    def __init__(self, instructions: List[int], inputs: List[int]) -> None:
 
-        self.instructions = instructions.copy()
+        self.instructions: list[int] = instructions.copy()
 
-        self.opcode_params = {
+        self.opcode_params: Dict[str, int] = {
             "01": 3,
             "02": 3,
             "03": 1,
@@ -28,135 +23,94 @@ class IntCodeVM:
             "99": 0
         }
 
-        self.inputs = inputs
+        self.inputs: List[int] = inputs
 
         # opcodes 1,2 are represented by ABCDE, ABC type of params, DE is the opcode
 
         # Part 1
 
-        self.program_outputs = []
-        self.running = False
+        self.program_outputs: List[int] = []
+        self.running: bool = False
+        self.finished: bool = False
 
-        self.disp = None
+        self.dispatcher = None
 
-        self.rel_base = 0
+        self.rel_base: int = 0
 
-        self.pc = 0
+        self.pc: int = 0
 
     def run(self):
         self.running = True
 
         while self.running:
 
-            instruction = str(self.instructions[self.pc]).rjust(5, "0")  # pads out the instruction
+            instruction: str = str(self.instructions[self.pc]).rjust(5, "0")  # pads out the instruction
 
-            opcode = instruction[-2:]
-            param_modes = instruction[:-2]
-            # print(opcode, "  :  ", self.pc)
-            # print("opcode ", opcode)
-            # pc_1 = self.pc+1
-            # pc_x = self.pc +1 +self.opcode_params[opcode]
+            opcode: str = instruction[-2:]
+            param_modes: str = instruction[:-2]
 
-            # params = self.instructions[pc_1:pc_x]
-            params = self.instructions[self.pc + 1:self.pc + 1 + self.opcode_params[opcode]]
+            params: List[int] = self.instructions[self.pc + 1:self.pc + 1 + self.opcode_params[opcode]]
 
-            addrs = self.get_addresses(params, param_modes)
+            addresses: List[int] = self.get_addresses(params, param_modes)
 
             if opcode == "01":  # adds
-                # print("adds:")
-                # value1 = params[0] if param_modes[2] == "1" else self.instructions[params[0]]
-                # value2 = params[1] if param_modes[1] == "1" else self.instructions[params[1]]
-                # store_location = params[2]
+                value1 = self.instructions[addresses[0]]
+                value2 = self.instructions[addresses[1]]
+                store_location = addresses[2]
 
-                value1 = self.instructions[addrs[0]]
-                value2 = self.instructions[addrs[1]]
-                store_location = addrs[2]
-
-                # self.instructions[store_location] = value1 + value2
                 self.instructions[store_location] = value1 + value2
             elif opcode == "02":  # multiplies
-                # print("mults")
-                # value1 = params[0] if param_modes[2] == "1" else self.instructions[params[0]]
-                # value2 = params[1] if param_modes[1] == "1" else self.instructions[params[1]]
-                # store_location = params[2]
+                value1 = self.instructions[addresses[0]]
+                value2 = self.instructions[addresses[1]]
+                store_location = addresses[2]
 
-                value1 = self.instructions[addrs[0]]
-                value2 = self.instructions[addrs[1]]
-                store_location = addrs[2]
-
-                # self.instructions[store_location] = value1 * value2
                 self.instructions[store_location] = value1 * value2
             elif opcode == "03":  # input
-                # print(self.id, "  input: ", self.inputs)
-
                 if len(self.inputs) == 0:
                     self.running = False
-                    return
+                    return None
 
-                # self.instructions[params[0]] = self.inputs.pop(0)
-                self.instructions[addrs[0]] = self.inputs.pop(0)
+                self.instructions[addresses[0]] = self.inputs.pop(0)
             elif opcode == "04":  # output
-                # print("output", self.disp)
-                # print(instructions)
-                # output_value = params[0] if param_modes[2] == "1" else self.instructions[params[0]]
-                output_value = self.instructions[addrs[0]]
+                output_value = self.instructions[addresses[0]]
 
-                # print("output: ", output_value, "  :  ", addrs[0])
-                """
-                print(self.id, ":  output:  ", output_value)
-                """
-                if self.disp is not None:
-                    self.disp.pass_output(self, output_value)
+                if self.dispatcher is not None:
+                    self.dispatcher.pass_output(self, output_value)
 
                 self.program_outputs.append(output_value)
             elif opcode == "05":  # jump-if-true
-                # value1 = params[0] if param_modes[2] == "1" else self.instructions[params[0]]
-                # next_instruction = params[1] if param_modes[1] == "1" else self.instructions[params[1]]
-                value1 = self.instructions[addrs[0]]
-                next_instruction = self.instructions[addrs[1]]
+                value1 = self.instructions[addresses[0]]
+                next_instruction = self.instructions[addresses[1]]
 
                 if value1 != 0:
                     self.pc = next_instruction
                     continue
             elif opcode == "06":  # jump-if-false
-                # value1 = params[0] if param_modes[2] == "1" else self.instructions[params[0]]
-                # next_instruction = params[1] if param_modes[1] == "1" else self.instructions[params[1]]
-                value1 = self.instructions[addrs[0]]
-                next_instruction = self.instructions[addrs[1]]
-                # print("j_f  ", value1, "  :  ", next_instruction)
+                value1 = self.instructions[addresses[0]]
+                next_instruction = self.instructions[addresses[1]]
 
                 if value1 == 0:
                     self.pc = next_instruction
                     continue
             elif opcode == "07":  # less-than
-                # value1 = params[0] if param_modes[2] == "1" else self.instructions[params[0]]
-                # value2 = params[1] if param_modes[1] == "1" else self.instructions[params[1]]
-                # store_location = params[2]
-                value1 = self.instructions[addrs[0]]
-                value2 = self.instructions[addrs[1]]
-                store_location = addrs[2]
+                value1 = self.instructions[addresses[0]]
+                value2 = self.instructions[addresses[1]]
+                store_location = addresses[2]
 
-                # print("values: ", value1, " : ",value2)
-                # print("store: ", store_location, "  : ", value1<value2)
-                # self.instructions[store_location] = 1 if value1 < value2 else 0
                 self.instructions[store_location] = 1 if value1 < value2 else 0
             elif opcode == "08":  # equals
-                # value1 = params[0] if param_modes[2] == "1" else self.instructions[params[0]]
-                # value2 = params[1] if param_modes[1] == "1" else self.instructions[params[1]]
-                # store_location = params[2]
-                value1 = self.instructions[addrs[0]]
-                value2 = self.instructions[addrs[1]]
-                store_location = addrs[2]
+                value1 = self.instructions[addresses[0]]
+                value2 = self.instructions[addresses[1]]
+                store_location = addresses[2]
 
-                # self.instructions[store_location] = 1 if value1 == value2 else 0
                 self.instructions[store_location] = 1 if value1 == value2 else 0
             elif opcode == "09":
-                value1 = self.instructions[addrs[0]]
+                value1 = self.instructions[addresses[0]]
 
                 self.rel_base += value1
 
             elif opcode == "99":  # halt
-                # print("halt")
+                self.finished = True
                 break
 
             self.pc += self.opcode_params[opcode] + 1
