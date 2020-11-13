@@ -1,6 +1,6 @@
 from PIL import Image
 
-from util import input_handler
+from aoc import input_handler
 
 lines = input_handler.get_input(8)
 

@@ -1,6 +1,7 @@
 # link to Day 1: https://adventofcode.com/2019/day/5
 
-from util import input_handler, intcode_machine
+from aoc import input_handler
+from aoc.aoc.util import intcode_machine
 
 lines = input_handler.get_input(5)
 

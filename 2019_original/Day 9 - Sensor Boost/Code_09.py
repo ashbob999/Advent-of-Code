@@ -1,4 +1,5 @@
-from util import input_handler, intcode_machine
+from aoc import input_handler
+from aoc.aoc.util import intcode_machine
 
 lines = input_handler.get_input(9)
 
@@ -8,7 +9,7 @@ instr = list(map(int, lines[0].split(",")))
 
 
 def pad_list(arr, amount):
-    for i in range(amount):
+	for i in range(amount):
         arr.append(0)
 
 

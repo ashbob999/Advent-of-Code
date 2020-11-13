@@ -1,4 +1,4 @@
-from util import input_handler
+from aoc import input_handler
 
 # link to Day X: https://adventofcode.com/2019/day/X
 

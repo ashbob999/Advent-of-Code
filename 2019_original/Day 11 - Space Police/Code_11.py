@@ -1,7 +1,7 @@
 from PIL import Image, ImageOps
 
-from util import input_handler
-from util.intcode_machine import IntCodeVM
+from aoc import input_handler
+from aoc.aoc.util import IntCodeVM
 
 lines = input_handler.get_input(11)
 
@@ -9,8 +9,8 @@ instr = list(map(int, lines[0].split(",")))
 
 
 def pad_list(arr, amount):
-    for i in range(amount):
-        arr.append(0)
+	for i in range(amount):
+		arr.append(0)
 
 
 # part 1

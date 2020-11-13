@@ -1,6 +1,7 @@
 from itertools import permutations
 
-from util import input_handler, amplifier_circuit
+from aoc import input_handler
+from aoc.aoc.util import amplifier_circuit
 
 lines = input_handler.get_input(7)
 

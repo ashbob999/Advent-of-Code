@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Dict
 
-from util import amplifier_circuit
+from aoc.aoc.util import amplifier_circuit
 
 
 class IntCodeVM:

@@ -1,4 +1,4 @@
-from util import intcode_machine
+from aoc.aoc.util import intcode_machine
 
 
 class Dispatcher:
