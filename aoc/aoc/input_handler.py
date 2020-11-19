@@ -42,7 +42,7 @@ def create_input_file(input_file_path: str, day: str, year: str) -> None:
 	url = "https://adventofcode.com/" + year + "/day/" + day + "/input"
 
 	print("url:", url)
-	print(input_file_path)
+	print("Input File Location:", input_file_path)
 
 	headers = {}
 

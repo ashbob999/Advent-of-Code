@@ -8,8 +8,8 @@ from aoc.input_handler import create_input_file, load_session
 
 def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 	# create the path to the year folder
-	start_path = os.path.join("year", year, "")
-	print(start_path)
+	start_path = os.path.join(year, "")
+	# print(start_path)
 
 	# creates the year folder
 	os.makedirs(start_path, exist_ok=True)
@@ -38,7 +38,7 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 			extra = ""
 			if gen_session:
 				imports += ", load_session"
-				extra += "load_session(session_path={})\n".format(str(["..", "..", ".env"]))
+				extra += "load_session(session_path={})\n".format(str(["..", ".env"]))
 
 			extra += "input_text = get_input_file()\n"
 
@@ -100,7 +100,7 @@ def main():
 	create_day(year, day, overwrite=args.overwrite, gen_session=args.session)
 
 	# create the input path
-	input_path = os.path.join("year", year, "input", "day" + day + ".txt")
+	input_path = os.path.join(year, "input", "day" + day + ".txt")
 
 	# load the session, so we can get the input
 	load_session(session_path=[".env"])
