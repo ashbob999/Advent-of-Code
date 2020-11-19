@@ -1,9 +1,10 @@
-from aoc import input_handler
+# from ./../util import input_handler
 
 # link to Day X: https://adventofcode.com/2019/day/1
 
 # gets the input lines for the challenge
-lines = input_handler.get_input(1)
+with open("../resources/Day_01_Inputs.txt") as f:
+	lines = f.readlines()
 
 masses = list(map(int, lines))
 
