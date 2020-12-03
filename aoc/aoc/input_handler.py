@@ -2,8 +2,6 @@ import os
 import sys
 from pathlib import Path
 
-import requests
-
 from .util.aoc_input import Aoc_Input
 
 
@@ -50,6 +48,8 @@ def create_input_file(input_file_path: str, day: str, year: str) -> None:
 	cookies = {
 		"session": os.getenv("SESSION")
 	}
+
+	import requests
 
 	# send the request
 	request = requests.get(url, headers=headers, cookies=cookies)
