@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 def load_session(session_cookie: str = None, session_path: list = None) -> None:
 	# always try to load from given session cookie first
 	if session_cookie is not None:
