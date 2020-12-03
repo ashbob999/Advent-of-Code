@@ -1,3 +1,4 @@
+"""
 import os
 
 
@@ -25,3 +26,4 @@ class DayTemplate:
 
 	def part2(self) -> None:
 		pass
+"""
