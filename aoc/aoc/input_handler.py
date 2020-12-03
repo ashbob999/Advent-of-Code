@@ -1,6 +1,5 @@
 import os
 import sys
-from pathlib import Path
 
 from .util.aoc_input import Aoc_Input
 
@@ -13,6 +12,7 @@ def load_session(session_cookie: str = None, session_path: list = None) -> None:
 		if session_path is not None:  # if the session path is set
 			try:
 				from dotenv import load_dotenv
+				from pathlib import Path
 
 				path = Path(os.path.join(*session_path))  # gets a path to the .env file
 				if not session_path[-1] == ".env":
