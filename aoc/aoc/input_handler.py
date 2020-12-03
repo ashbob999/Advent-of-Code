@@ -65,7 +65,7 @@ def create_input_file(input_file_path: str, day: str, year: str) -> None:
 		file.write(request.content.decode("utf-8"))
 
 
-def get_input_file(re_download: bool = False) -> Aoc_Input:
+def get_input_file(re_download: bool = False):
 	# split the path into its folders
 	path = os.path.abspath(sys.argv[0]).split(os.sep)
 	year = path[-2]  # extract the year
