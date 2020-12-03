@@ -1,9 +1,6 @@
 import os
 import sys
 
-from .util.aoc_input import Aoc_Input
-
-
 def load_session(session_cookie: str = None, session_path: list = None) -> None:
 	# always try to load from given session cookie first
 	if session_cookie is not None:
@@ -84,5 +81,7 @@ def get_input_file(re_download: bool = False) -> Aoc_Input:
 	# open the file and read its contents
 	with open(os.path.join("input", "day" + day + ".txt"), "r") as file:
 		data = file.read()
+
+	from .util.aoc_input import Aoc_Input
 
 	return Aoc_Input(data)
