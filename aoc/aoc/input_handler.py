@@ -66,7 +66,7 @@ def create_input_file(input_file_path: str, day: str, year: str) -> None:
 		file.write(request.content.decode("utf-8"))
 
 
-def get_input_file(re_download: bool = False):
+def get_input_file(re_download: bool = False, session_path: list = None):
 	# split the path into its folders
 	path = os.path.abspath(sys.argv[0]).split(os.sep)
 	year = path[-2]  # extract the year
@@ -77,6 +77,7 @@ def get_input_file(re_download: bool = False):
 
 	# create the input file if it doesnt exist, or we should reset the input
 	if re_download or not os.path.isfile(input_path):
+		load_session(session_path=session_path)
 		create_input_file(input_path, day.lstrip("0"), year)
 
 	# open the file and read its contents
