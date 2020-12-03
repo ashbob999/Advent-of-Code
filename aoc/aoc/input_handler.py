@@ -1,10 +1,5 @@
 import os
 import sys
-from pathlib import Path
-
-import requests
-
-from .util.aoc_input import Aoc_Input
 
 
 def load_session(session_cookie: str = None, session_path: list = None) -> None:
@@ -15,6 +10,7 @@ def load_session(session_cookie: str = None, session_path: list = None) -> None:
 		if session_path is not None:  # if the session path is set
 			try:
 				from dotenv import load_dotenv
+				from pathlib import Path
 
 				path = Path(os.path.join(*session_path))  # gets a path to the .env file
 				if not session_path[-1] == ".env":
@@ -51,6 +47,8 @@ def create_input_file(input_file_path: str, day: str, year: str) -> None:
 		"session": os.getenv("SESSION")
 	}
 
+	import requests
+
 	# send the request
 	request = requests.get(url, headers=headers, cookies=cookies)
 
@@ -68,7 +66,7 @@ def create_input_file(input_file_path: str, day: str, year: str) -> None:
 		file.write(request.content.decode("utf-8"))
 
 
-def get_input_file(re_download: bool = False) -> Aoc_Input:
+def get_input_file(re_download: bool = False, session_path: list = None):
 	# split the path into its folders
 	path = os.path.abspath(sys.argv[0]).split(os.sep)
 	year = path[-2]  # extract the year
@@ -79,10 +77,13 @@ def get_input_file(re_download: bool = False) -> Aoc_Input:
 
 	# create the input file if it doesnt exist, or we should reset the input
 	if re_download or not os.path.isfile(input_path):
+		load_session(session_path=session_path)
 		create_input_file(input_path, day.lstrip("0"), year)
 
 	# open the file and read its contents
 	with open(os.path.join("input", "day" + day + ".txt"), "r") as file:
 		data = file.read()
+
+	from .util.aoc_input import Aoc_Input
 
 	return Aoc_Input(data)
