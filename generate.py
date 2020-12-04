@@ -34,17 +34,18 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 			        "part2()"
 			        "\n")
 
-			imports = "from aoc.input_handler import get_input_file"
-			extra = ""
+			imports = ""
+
+			input_creation = "input_text = get_input_file("
+
 			if gen_session:
-				imports += ", load_session"
-				extra += "load_session(session_path={})\n".format(str(["..", ".env"]))
+				input_creation += "session_path={}".format(str(["..", ".env"]))
 
-			extra += "input_text = get_input_file()\n"
+			input_creation += ")\n"
 
-			f.write(imports)
-			f.write("\n\n")  # 1 line space between imports and extra
-			f.write(extra)
+			f.write("from aoc import get_input_file\n")
+			f.write("\n")  # 1 line space between imports and extra
+			f.write(input_creation)
 			f.write("\n\n")  # 2 line space between extra and part1
 
 			f.write(code)
