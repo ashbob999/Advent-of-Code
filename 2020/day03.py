@@ -2,12 +2,13 @@ from aoc import get_input_file
 
 input_text = get_input_file(session_path=["..", ".env"])
 
-data = input_text.to_list(mf=str,sep="\n")
+#data = input_text.to_list(mf=str,sep="\n")
+data = input_text.text.split("\n")
 
 def part1(dx, dy):
 	trees = 0
 	start = [0,0]
-	while start[1] < len(data) - 1:
+	while start[1] < len(data) - 2:
 		start[0] += dx
 		start[0] %= len(data[1])
 		start[1] += dy

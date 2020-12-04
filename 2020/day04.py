@@ -5,13 +5,6 @@ input_text = get_input_file(session_path=['..', '.env'])
 
 data = input_text.to_list(mf=str, sep="\n\n")
 
-data1 = """
-hcl:#888785
-hgt:164cm byr:2001 iyr:2015 cid:88
-pid:545766238 ecl:hzl
-eyr:2022
-""".split("\n\n")
-
 req = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
 
 check = {
@@ -24,51 +17,35 @@ check = {
 	"pid": lambda x: re.fullmatch("[0-9]{9}", x)
 }
 
+p1 = 0
+p2 = 0
+
+for p in data:
+	p = p.replace("\n", " ")
+
+	d = {e.split(":")[0]: e.split(":")[1] for e in p.split(" ") if e}
+
+	if len(d) >= 7:
+		f = True
+		f2 = True
+		for r in req:
+			if r not in d:
+				f = False
+				break
+			if r != "cid" and not check[r](d[r]):
+				f2 = False
+
+		if f:
+			p1 += 1
+			if f2:
+				p2 += 1
+
+
 def part1():
-	valid = 0
-
-	for p in data:
-		p = p.replace("\n", " ")
-
-		d = {e.split(":")[0]: e.split(":")[1] for e in p.split(" ") if e}
-
-		if len(d) >= 7:
-			f = True
-			for r in req:
-				if r not in d:
-					f = False
-					break
-
-			if f:
-				valid += 1
-
-	print(valid)
-
+	print(p1)
 
 def part2():
-	valid = 0
-
-	for p in data:
-		p = p.replace("\n", " ")
-
-		d = {e.split(":")[0]: e.split(":")[1] for e in p.split(" ") if e}
-
-		if len(d) >= 7:
-			f = True
-			for r in req:
-				if r not in d:
-					f = False
-					break
-				if r != "cid" and not check[r](d[r]):
-					f = False
-					break
-
-			if f:
-				valid += 1
-
-	print(valid)
-
-
+	print(p2)
 
 part1()
 part2()
