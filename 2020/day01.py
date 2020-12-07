@@ -1,8 +1,14 @@
-from aoc import get_input_file
+from os.path import isfile
 
-input_text = get_input_file(session_path=["..", ".env"])
+if not isfile("input/day01.txt"):
+	from aoc import get_input_file
 
-data = input_text.to_list(sep="\n")
+	input_text = get_input_file(session_path=["..", ".env"])
+
+	data = input_text.to_list(sep="\n")
+
+
+data = (int(x) for x in open("input/day01.txt").read().split("\n") if x)
 
 data = sorted(data)
 
