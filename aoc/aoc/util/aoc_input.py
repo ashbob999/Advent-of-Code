@@ -1,3 +1,4 @@
+"""
 from typing import Iterator
 
 
@@ -10,3 +11,4 @@ class Aoc_Input:
 
 	def to_gen(self, mf=int, sep: str = ",") -> Iterator:
 		return (mf(x) for x in self.text.split(sep) if x)
+"""

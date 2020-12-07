@@ -20,7 +20,45 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 
 		# writes the boilerplate code the the day file
 		with open(start_path + "day" + day + ".py", "w") as f:
-			# default boilerplate code
+			# import Callable from typing, so we don't get an error, when calling with mf=str
+			f.write("from typing import Callable\n")
+
+			# import the isfile, and join from os.path
+			f.write("from os.path import isfile, join as path_join\n")
+
+			# create the day input file name
+			f.write("file_name = path_join('input', 'day%s.txt')\n" % day)
+
+			# function to get the input as a list
+			f.write(
+				"def to_list(mf: Callable = int, sep='\\n'): "
+				"return [mf(x) for x in open(file_name).read().split(sep) if x]")
+			f.write("\n")
+
+			# function to get the input as a generator
+			f.write(
+				"def to_gen(mf: Callable = int, sep='\\n'): "
+				"return (mf(x) for x in open(file_name).read().split(sep) if x)")
+			f.write("\n\n")
+
+			# stick imports and file creation inside an if statement
+			# to be called if the input file does not exist
+			f.write("if not isfile(file_name):\n")
+
+			# add slow import
+			f.write("\tfrom aoc import get_input_file\n")
+
+			# create the input file
+			f.write("\tget_input_file(")
+
+			if gen_session:
+				f.write("session_path={}".format(str(["..", ".env"])))
+
+			f.write(")\n")
+
+			f.write("\n\n")  # 2 line space between start code and part1
+
+			# part 1 and part 2 code
 			code = ("def part1():"
 			        "\n"
 			        "\tpass"
@@ -33,20 +71,6 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 			        "\n"
 			        "part2()"
 			        "\n")
-
-			imports = ""
-
-			input_creation = "input_text = get_input_file("
-
-			if gen_session:
-				input_creation += "session_path={}".format(str(["..", ".env"]))
-
-			input_creation += ")\n"
-
-			f.write("from aoc import get_input_file\n")
-			f.write("\n")  # 1 line space between imports and extra
-			f.write(input_creation)
-			f.write("\n\n")  # 2 line space between extra and part1
 
 			f.write(code)
 	else:
