@@ -1,14 +1,15 @@
-"""from aoc import get_input_file
+from typing import Callable
+from os.path import isfile, join as path_join
+file_name = path_join('input', 'day06.txt')
+def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
 
-input_text = get_input_file(session_path=['..', '.env'])
+if not isfile(file_name):
+	from aoc import get_input_file
+	get_input_file(session_path=['..', '.env'])
 
-data = input_text.to_list(mf=str, sep="\n\n")
-"""
 
-def gif(mf=int, sep=","):
-	return [mf(x) for x in open("input/day06.txt").read().split(sep) if x]
-
-data = gif(mf=str, sep="\n\n")
+data = to_list(mf=str, sep="\n\n")
 
 s1 = 0
 s2 = 0

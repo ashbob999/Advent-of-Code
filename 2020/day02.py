@@ -1,11 +1,18 @@
-from aoc import get_input_file
+from typing import Callable
+from os.path import isfile, join as path_join
+file_name = path_join('input', 'day02.txt')
+def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
 
-input_text = get_input_file(session_path=["..", ".env"])
+if not isfile(file_name):
+	from aoc import get_input_file
+	get_input_file(session_path=['..', '.env'])
+
 
 p1_count = 0
 p2_count = 0
 
-for r in input_text.to_gen(mf=str, sep="\n"):
+for r in to_gen(mf=str):
 	s = r.split(":")
 	p = s[-1][1:]
 	c = s[0][-1]
