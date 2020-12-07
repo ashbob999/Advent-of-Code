@@ -80,6 +80,7 @@ def get_input_file(re_download: bool = False, session_path: list = None):
 		load_session(session_path=session_path)
 		create_input_file(input_path, day.lstrip("0"), year)
 
+	"""
 	# open the file and read its contents
 	with open(os.path.join("input", "day" + day + ".txt"), "r") as file:
 		data = file.read()
@@ -87,3 +88,4 @@ def get_input_file(re_download: bool = False, session_path: list = None):
 	from .util.aoc_input import Aoc_Input
 
 	return Aoc_Input(data)
+	"""
