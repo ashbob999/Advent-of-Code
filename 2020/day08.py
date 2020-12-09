@@ -10,16 +10,6 @@ if not isfile(file_name):
 
 data = to_list(mf=str)
 
-adata = """nop +0
-acc +1
-jmp +4
-acc +3
-jmp -3
-acc -99
-acc +1
-jmp -4
-acc +6""".split("\n")
-
 from VM import Machine
 
 vm = Machine(data)
@@ -34,8 +24,8 @@ def part2():
 
 	vm.swap_items = si
 	for i in range(len(data)):
-		if data[i][:3] in si:
-			#print("in list", i)
+		if data[i][:3] in si and vm.instr[i]:
+			# print("in list", i)
 			vm.reset()
 			vm.swap_index = i
 			vm.run()
