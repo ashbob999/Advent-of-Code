@@ -9,46 +9,40 @@ if not isfile(file_name):
 	get_input_file(session_path=['..', '.env'])
 
 data = to_list(mf=str)
-instr_ = [[x.split(" ")[0], int(x.split(" ")[1])] for x in data]
 
-def part1(instr):
-	seen = set()
+adata = """nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6""".split("\n")
 
-	pc = 0
-	acc = 0
+from VM import Machine
 
-	while True:
-		if pc == len(instr):
-			return (True, acc)
-		if pc in seen:
-			return (False, acc)
-		seen.add(pc)
-		if instr[pc][0] == "nop":
-			pc += 1
-		elif instr[pc][0] == "acc":
-			acc += instr[pc][1]
-			pc += 1
-		elif instr[pc][0] == "jmp":
-			pc += instr[pc][1]
+vm = Machine(data)
+
+def part1():
+	vm.run()
+	print(vm.acc)
 
 
 def part2():
-	change_i = 0
+	si = ("jmp", "nop")
+
+	vm.swap_items = si
 	for i in range(len(data)):
-		if instr_[i][0] == "acc":
-			continue
-		data2 = to_list(mf=str)
-		instr2 = [[x.split(" ")[0], int(x.split(" ")[1])] for x in data]
+		if data[i][:3] in si:
+			#print("in list", i)
+			vm.reset()
+			vm.swap_index = i
+			vm.run()
 
-		if instr2[i][0] == "jmp":
-			instr2[i][0] = "nop"
-		elif instr2[i][0] == "nop":
-			instr2[i][0] = "jmp"
+			if vm.result == 1:
+				print(vm.acc)
+				return
 
-		res = part1(instr2)
-		if res[0]:
-			return res
-
-
-print(part1(instr_))
-print(part2())
+part1()
+part2()
