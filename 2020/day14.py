@@ -8,9 +8,13 @@ if not isfile(file_name):
 	from aoc import get_input_file
 	get_input_file(session_path=['..', '.env'])
 
-data = to_list(mf=str)
+#data = to_list(mf=str)
+data = open(file_name).read().strip().split("\n")
 
 max_n = (1 << 36) - 1
+
+mem_0 = {}
+mem_1 = {}
 
 def part1():
 	mem = {}
@@ -30,16 +34,24 @@ def part1():
 				if c == "X":
 					continue
 				elif c == "1":
-					num |= 1 << (36 - i - 1)
+					if i not in mem_1:
+						mem_1[i] = 1 << (36 - i - 1)
+					num |= mem_1[i]
 				else:
-					num &= max_n ^ (1 << (36 -i -1))
+					if i not in mem_0:
+						mem_0[i] = ~(1 << (36 - i - 1))
+					num &= mem_0[i]
 
 			mem[index] = num
 
 	print(sum(mem.values()))
 
-
 from itertools import product
+
+adata = """mask = 000000000000000000000000000000X1001X
+mem[42] = 100
+mask = 00000000000000000000000000000000X0XX
+mem[26] = 1""".split("\n")
 
 def part2():
 	mem = {}
@@ -63,23 +75,30 @@ def part2():
 				if c == "0":
 					continue
 				elif c == "1":
-					index |= 1 << (36 - i - 1)
+					index |= mem_1[i]
+					#index |= 1 << (36 - i - 1)
 				else:
 					x_indexes.append(i)
 
 			for c in product("01", repeat=len(x_indexes)):
-				tmp = list(bin(index)[2:].rjust(36, "0"))
+				val = index
+
 				for i, x_index in enumerate(x_indexes):
-					tmp[x_index] = c[i]
+					if c[i] == "0":
+						if x_index not in mem_1:
+							mem_1[x_index] = 1 << (36 - x_index - 1)
+						val |= mem_1[x_index]
+						#val |= 1 << (36 - x_index -1)
+					else:
+						if x_index not in mem_0:
+							mem_0[x_index] = ~(1 << (36 - x_index - 1))
+						val &= mem_0[x_index]
+						#val &= max_n ^ (1 << (36 - x_index -1))
 
-				mem[int("".join(tmp), 2)] = num
-				#poss.append(int("".join(tmp), 2))
-
-			#for p in poss:
-			#	mem[p] = num
+				#print(val)
+				mem[val] = num
 
 	print(sum(mem.values()))
-
 
 part1()
 part2()
