@@ -1,51 +1,41 @@
-from typing import Callable
 from os.path import isfile, join as path_join
+from typing import Callable
+
 file_name = path_join('input', 'day05.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file(session_path=['..', '.env'])
 
+from itertools import repeat
 
-data = to_list(mf=str, sep="\n")
+table = {
+	70: "0",  # F -> 0
+	66: "1",  # B -> 1
+	76: "0",  # L -> 0
+	82: "1"  # R -> 1
+}
 
-seats = []
+st = str.translate
+
 
 def part1():
-	m = 0
-	for p in data:
-		f = 0
-		b = 127
+	print(max(map(int, open(file_name).read().strip().translate(table).split("\n"), repeat(2))))
 
-		for c in p[:7]:
-			if c == "F":
-				b -= (b-f +1) // 2
-			else:
-				f += (b-f +1) // 2
-
-		l = 0
-		r = 7
-
-		for c in p[7:]:
-			if c == "L":
-				r -= (r-l +1) // 2
-			else:
-				l += (r-l +1) // 2
-
-		id = f*8 + l
-		m = max(m, id)
-		seats.append(id)
-
-	print(m)
 
 def part2():
-	global seats
-	seats = sorted(seats)
-	for i in range(0, len(seats)-1):
-		if seats[i+1] - seats[i] == 2:
-			print(seats[i] +1)
+	seats = sorted(map(int, open(file_name).read().strip().translate(table).split("\n"), repeat(2)))
+	for i in range(0, len(seats) - 1):
+		if seats[i + 1] - seats[i] == 2:
+			print(seats[i] + 1)
 			return
 
 
