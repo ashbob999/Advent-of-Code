@@ -24,40 +24,28 @@ door_key = data[1]
 
 p = 20201227
 
-def find_loop(key):
+def find_loop(key, p):
 	l = 1
 	b = 7
-	while b % p != key:
-		b *= 7
+	while b != key:
+		b = b*7 % p
 		l += 1
 
 	return l
 
-def bsgs(a,b,p,N = None):
-    if not N: N = 1 + int(math.sqrt(p))
 
-    #initialize baby_steps table
-    baby_steps = {}
-    baby_step = 1
-    for r in range(N+1):
-        baby_steps[baby_step] = r
-        baby_step = baby_step * a % p
+def enc(key, loop, p):
+	v = 1
+	for i in range(loop):
+		v = v*key % p
 
-    #now take the giant steps
-    giant_stride = pow(a,(p-2)*N,p)
-    giant_step = b
-    for q in range(N+1):
-        if giant_step in baby_steps:
-            return q*N + baby_steps[giant_step]
-        else:
-            giant_step = giant_step * giant_stride % p
-    return "No Match"
+	return v
 
 def part1():
-	card_loop = bsgs(7, card_key, p)
+	card_loop = find_loop(card_key, p)
 	print("card loop:", card_loop)
 
-	enc_key = (door_key ** card_loop) % p
+	enc_key = enc(door_key, card_loop, p)
 	print("enc_key:", enc_key)
 
 
