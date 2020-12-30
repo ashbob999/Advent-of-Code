@@ -1,11 +1,18 @@
-from typing import Callable
 from os.path import isfile, join as path_join
+from typing import Callable
+
 file_name = path_join('input', 'day24.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file(session_path=['..', '.env'])
 
 data = to_list(mf=str)
@@ -54,7 +61,9 @@ def part1():
 	print(count)
 
 adj = ((-2, 0), (2, 0), (-1, -1), (1, -1), (-1, 1), (1, 1))
-print(len(set(adj)))
+
+
+# print(len(set(adj)))
 
 def part2():
 	global tiles
@@ -85,11 +94,11 @@ def part2():
 
 		tiles = new_tiles2
 
-		cc = 0
-		for k, v in tiles.items():
-			if v == 1:
-				cc += 1
-		print(i+1, cc)
+	# cc = 0
+	# for k, v in tiles.items():
+	# 	if v == 1:
+	# 		cc += 1
+	# print(i+1, cc)
 
 	count = 0
 	for t, v in tiles.items():
