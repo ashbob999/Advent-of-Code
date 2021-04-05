@@ -10,6 +10,8 @@ if not isfile(file_name):
 
 data = to_list(mf=str, sep="\n\n")
 
+from queue_index import Queue
+
 p1_deck = [int(x) for x in data[0].strip().split("\n")[1:]]
 p2_deck = [int(x) for x in data[1].strip().split("\n")[1:]]
 
@@ -51,10 +53,10 @@ def part2(p1_deck, p2_deck):
 
 	while True:
 		winner = None
-		if (":".join(map(str, p1_deck)), ":".join(map(str, p2_deck))) in seen:
+		if (tuple(p1_deck), tuple(p2_deck)) in seen:
 			return 1, []
 
-		seen.add((":".join(map(str, p1_deck)), ":".join(map(str, p2_deck))))
+		seen.add((tuple(p1_deck), tuple(p2_deck)))
 
 
 		p1_card = p1_deck.pop(0)
@@ -83,6 +85,7 @@ def part2(p1_deck, p2_deck):
 
 part1()
 
+
 p1_deck = [int(x) for x in data[0].strip().split("\n")[1:]]
 p2_deck = [int(x) for x in data[1].strip().split("\n")[1:]]
 
@@ -93,3 +96,4 @@ for i in range(len(wd)):
 	tot += wd[i] * (len(wd) - i)
 
 print(tot)
+
