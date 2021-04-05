@@ -1,11 +1,18 @@
-from typing import Callable
 from os.path import isfile, join as path_join
+from typing import Callable
+
 file_name = path_join('input', 'day23.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file(session_path=['..', '.env'])
 
 data = "167248359"
@@ -92,11 +99,13 @@ def part2():
 	curr_node = st
 
 	for i in range(10_000_000):
-		#if i % 100000 == 0: print(i)
+		# if i % 100000 == 0: print(i)
 		picked_up = []
+		vals = []
 		for j in range(3):
 			cn = curr_node.next
 			picked_up.append(cn)
+			vals.append(cn.value)
 			curr_node.next = curr_node.next.next
 
 		# get dest node
@@ -104,7 +113,7 @@ def part2():
 		if dest_value <= 0:
 			dest_value = size
 
-		while dest_value == picked_up[0].value or dest_value == picked_up[1].value or dest_value == picked_up[2].value:
+		while dest_value in vals:
 			dest_value -= 1
 			if dest_value <= 0:
 				dest_value = size
@@ -113,7 +122,7 @@ def part2():
 
 		aft = dest.next
 		for i in range(3):
-			dest.next = picked_up[-1 -i]
+			dest.next = picked_up[-1 - i]
 			dest.next.next = aft
 			aft = dest.next
 
