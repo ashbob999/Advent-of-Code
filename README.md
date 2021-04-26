@@ -4,9 +4,11 @@ All solutions to the Advent of Code days. (That I've completed)
 
 All code is written in Python3
 
+I started this in 2019 competitively, but I am only aiming for private leaderboards if i get top 100 then it is a bonus.
+
 ## Running times
 
-they are stored in google sheets here: 
+they are stored in google sheets here:
 [read-only link](https://docs.google.com/spreadsheets/d/1ZAO14ONV_PkkaCCdpb2raCiHng1Zp0MSVFr3sX6cdSw/edit?usp=sharing)
 
 ## Running python solutions
