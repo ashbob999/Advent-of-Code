@@ -24,11 +24,8 @@ amount = 150
 def count(s, i, max_sum, used_conts, max_conts):
 	cnt = 0
 
-	if i >= len(containers) or s >= max_sum:
-		if s == max_sum:
-			return 1
-		else:
-			return 0
+	if i >= len(containers):
+		return 0
 
 	cnt += count(s, i + 1, max_sum, used_conts, max_conts)
 
@@ -44,11 +41,8 @@ def count(s, i, max_sum, used_conts, max_conts):
 def min_count(s, i, max_sum, used_conts):
 	min_used = 100000000000
 
-	if i >= len(containers) or s >= max_sum:
-		if s == max_sum:
-			return used_conts
-		else:
-			return 10000000000
+	if i >= len(containers):
+		return 10000000000
 
 	min_used = min(min_count(s, i + 1, max_sum, used_conts), min_used)
 
