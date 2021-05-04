@@ -20,63 +20,79 @@ from math import prod
 packages = list(map(int, open(file_name).read().strip().split("\n")))
 packages = sorted(packages, reverse=True)
 
-package_set = set(packages)
+# bin_match = {packages[i]: 1 << i for i in range(len(packages))}
+bin_match_i = [1 << i for i in range(len(packages))]
+
+
+def bin_to_arr(n):
+	arr = set()
+	i = 0
+	while n:
+		if n & 1:
+			arr.add(packages[i])
+		i += 1
+		n >>= 1
+
+	return arr
+
+
+package_bin = (1 << len(packages)) - 1
 package_length = len(packages)
 
-matches_p1 = []
-matches_p2 = []
 
-
-def get_sums(s, i, max_sum, used_conts, matches):
+def get_sums(s, i, max_sum, used_conts: int, matches):
 	if i >= package_length:
 		return
 
-	get_sums(s, i + 1, max_sum, used_conts.copy(), matches)
+	get_sums(s, i + 1, max_sum, used_conts, matches)
 
-	# tmp = used_conts.copy()
-	# tmp.add(packages[i])
 	if s + packages[i] < max_sum:
-		get_sums(s + packages[i], i + 1, max_sum, used_conts + [packages[i]], matches)
+		get_sums(s + packages[i], i + 1, max_sum, used_conts | bin_match_i[i], matches)
 	elif s + packages[i] == max_sum:
-		matches.append(used_conts + [packages[i]])
+		matches.append(used_conts | bin_match_i[i])
+
+
+def sort_key(x):
+	arr = bin_to_arr(x)
+	return len(arr), prod(arr)
 
 
 def part1():
 	matches = []
 	group_weight = sum(packages) // 3
-	get_sums(0, 0, group_weight, [], matches)
+	get_sums(0, 0, group_weight, 0, matches)
 
-	matches = sorted(matches, key=lambda x: (len(x), prod(x)))
+	matches = sorted(matches, key=sort_key)
 	matches_length = len(matches)
 
 	for i in range(matches_length - 1):
-		m1 = set(matches[i])
+		m1 = matches[i]
 		for j in range(i + 1, matches_length):
-			m2 = set(matches[j])
+			m2 = matches[j]
 			if not m1 & m2:
-				m3 = (m1 | m2) ^ package_set
-				if sum(m3) == group_weight:
-					return prod(m1)
+				m3 = (m1 | m2) ^ package_bin
+				if sum(bin_to_arr(m3)) == group_weight:
+					return prod(bin_to_arr(m1))
 
 
 def part2():
 	matches = []
 	group_weight = sum(packages) // 4
-	get_sums(0, 0, group_weight, [], matches)
+	get_sums(0, 0, group_weight, 0, matches)
 
-	matches = sorted(matches, key=lambda x: (len(x), prod(x)))
+	matches = sorted(matches, key=sort_key)
 	matches_length = len(matches)
 
 	for i in range(matches_length - 2):
-		m1 = set(matches[i])
+		m1 = matches[i]
 		for j in range(i + 1, matches_length - 1):
-			m2 = set(matches[j])
+			m2 = matches[j]
 			for k in range(j + 1, matches_length):
-				m3 = set(matches[k])
+				m3 = matches[k]
 				if not m1 & m2 and not m1 & m3 and not m2 & m3:
-					m4 = (m1 | m2 | m3) ^ package_set
-					if sum(m4) == group_weight:
-						return prod(m1)
+					m4 = (m1 | m2 | m3) ^ package_bin
+					if sum(bin_to_arr(m4)) == group_weight:
+						return prod(bin_to_arr(m1))
 
 
 print(part1())
