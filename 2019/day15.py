@@ -1,16 +1,24 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day15.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file()
 
 from intcode_machine import IntCodeVM
 
 instr = list(map(int, open(file_name).read().strip().split(",")))
+
 
 def get_4_dirs(current, grid):
 	dirs = []
@@ -26,7 +34,7 @@ def part1():
 	vm = IntCodeVM(instr, [])
 
 	start = (0, 0)
-	
+
 	# 1: north
 	# 2: south
 	# 3: west
@@ -37,7 +45,7 @@ def part1():
 	# 2: goal
 	grid = {}
 	grid[start] = 1
-	
+
 	goal_found = False
 
 	current_pos = start
@@ -93,6 +101,7 @@ def part1():
 
 	return grid, len(previous_dirs)
 
+
 def part2(grid):
 	path_count = 0
 	oxygen_pos = None
@@ -128,10 +137,8 @@ def part2(grid):
 				if p not in checked:
 					to_check[p] = prev_dist + 1
 
-	# time.sleep(1)
-
 	max_dist = max(list(checked.values()))
-	
+
 	return max_dist
 
 

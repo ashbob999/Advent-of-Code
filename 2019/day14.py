@@ -1,14 +1,22 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day14.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file()
 
 lines = open(file_name).read().strip().split("\n")
+
 
 class Reaction:
 	def __init__(self, reaction):
@@ -135,7 +143,7 @@ def part2(ore_1_fuel):
 
 	while get_ore_for_fuel(total_fuel) > ore_trillion:
 		total_fuel -= 1
-		
+
 	return total_fuel
 
 

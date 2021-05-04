@@ -1,11 +1,18 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day16.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file()
 
 from numpy import repeat
@@ -13,6 +20,7 @@ from numpy import repeat
 input_num = open(file_name).read().strip()
 
 default = [0, 1, 0, -1]
+
 
 def get_phase(num):
 	# print(num)
@@ -29,7 +37,6 @@ def get_output(inp_str_, times):
 	length = len(inp_str)
 
 	for t_ in range(times):
-		#print(t_)
 		output_values = []
 
 		for i in range(length):
@@ -55,18 +62,16 @@ def part1():
 	prev_output = get_output(out_list, 100)
 
 	value = "".join(map(str, prev_output[:8]))
-	
+
 	return value
 
 
 def get_fft_v2(signal_, times):
 	signal = signal_.copy()
 	length = len(signal) - 1
-	#print(length)
 	last_num = signal[-1]
 
 	for i in range(times):
-		#print(i)
 		total = last_num
 
 		for i in reversed(range(length)):
@@ -77,22 +82,18 @@ def get_fft_v2(signal_, times):
 
 
 def part2():
-	# input_num = "03036732577212944063491565474664"
-
 	input_num_big = input_num * 10000
 
 	offset = int(input_num_big[:7])
 
-	# print(offset)
-
 	input_sliced = input_num_big[offset:]
-	
+
 	output = list(map(int, list(input_sliced)))
 
 	output = get_fft_v2(output, 100)
 
 	message = "".join(map(str, output[:8]))
-	
+
 	return message
 
 

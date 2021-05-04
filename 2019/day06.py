@@ -1,51 +1,59 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day06.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file()
 
 orbits = map(lambda x: tuple(x.split(")")), open(file_name).read().strip().split("\n"))
 
+
 # (A, B) -> B orbits A
 
 class Tree:
-    def __init__(self, name, parent=None, children=None):
-        self.name = name
-        self.children = set()
-        self.parent = parent
+	def __init__(self, name, parent=None, children=None):
+		self.name = name
+		self.children = set()
+		self.parent = parent
 
-        if children is not None:
-            for child in children:
-                self.add_child(child)
+		if children is not None:
+			for child in children:
+				self.add_child(child)
 
-    def add_child(self, child):
-        self.children.add(child)
+	def add_child(self, child):
+		self.children.add(child)
 
 
 nodes = {}
 
 for orbit in orbits:
-    child_n = orbit[1]
-    parent_n = orbit[0]
+	child_n = orbit[1]
+	parent_n = orbit[0]
 
-    if parent_n in nodes:
-        parent = nodes[parent_n]
-    else:
-        parent = Tree(parent_n)
-        nodes[parent_n] = parent
+	if parent_n in nodes:
+		parent = nodes[parent_n]
+	else:
+		parent = Tree(parent_n)
+		nodes[parent_n] = parent
 
-    if child_n in nodes:
-        child = nodes[child_n]
-    else:
-        child = Tree(child_n, parent)
-        nodes[child_n] = child
+	if child_n in nodes:
+		child = nodes[child_n]
+	else:
+		child = Tree(child_n, parent)
+		nodes[child_n] = child
 
-    child.parent = parent
-    parent.add_child(child)
+	child.parent = parent
+	parent.add_child(child)
 
 
 def part1():
@@ -59,7 +67,7 @@ def part1():
 		while current_parent is not None:
 			count += 1
 			current_parent = current_parent.parent
-			
+
 	return count
 
 

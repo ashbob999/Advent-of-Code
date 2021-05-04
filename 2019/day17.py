@@ -1,22 +1,32 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day17.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file()
 
 from intcode_machine import IntCodeVM
 
 instr = list(map(int, open(file_name).read().strip().split(",")))
 
+
 def pad_list(arr, amount):
 	for i in range(amount):
 		arr.append(0)
-		
+
+
 pad_list(instr, len(instr) * 10)
+
 
 def part1():
 	vm = IntCodeVM(instr, [])
@@ -36,8 +46,8 @@ def part1():
 			grid_str += "."
 		elif chr(output) in ["^", "<", ">", "V"]:
 			grid_str += chr(output)
-			
-	#print(grid_str)
+
+	# print(grid_str)
 
 	grid = [list(row) for row in grid_str.split("\n") if list(row)]
 
@@ -51,7 +61,7 @@ def part1():
 						grid[i][j - 1] == "#" and \
 						grid[i][j + 1] == "#":
 					total_alignment += i * j
-					
+
 	return total_alignment
 
 
@@ -62,11 +72,11 @@ def part2():
 	func_c_str = "R,8,L,6,L,5,5,L,5,5\n"
 	video_str = "n\n"
 
-	#print(len(main_str[:-1]))
-	#print(len(func_a_str[:-1]))
-	#print(len(func_b_str[:-1]))
-	#print(len(func_c_str[:-1]))
-	#print(len(video_str[:-1]))
+	# print(len(main_str[:-1]))
+	# print(len(func_a_str[:-1]))
+	# print(len(func_b_str[:-1]))
+	# print(len(func_c_str[:-1]))
+	# print(len(video_str[:-1]))
 
 	instr[0] = 2
 
@@ -84,7 +94,7 @@ def part2():
 	vm.run()
 
 	outputs = vm.program_outputs
-	
+
 	return outputs[-1]
 
 

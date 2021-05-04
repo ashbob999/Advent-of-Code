@@ -1,22 +1,32 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day11.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file()
 
 from intcode_machine import IntCodeVM
 
 instr = list(map(int, open(file_name).read().strip().split(",")))
 
+
 def pad_list(arr, amount):
 	for i in range(amount):
 		arr.append(0)
 
+
 pad_list(instr, len(instr) * 2)
+
 
 def get_visited(inp):
 	vm = IntCodeVM(instr[:], [inp])
@@ -61,8 +71,9 @@ def get_visited(inp):
 			colour = 0
 
 		vm.add_input(colour)
-		
+
 	return visited
+
 
 def part1():
 	return len(get_visited(0))
@@ -79,20 +90,21 @@ def part2():
 
 	img_width = abs(max_x - min_x)
 	img_height = abs(max_y - min_y)
-	
+
 	pixels_to_add = {}
 	for k, v in visited.items():
 		new_pos = [k[0] + abs(min_x), k[1] + abs(min_y)]
 		pixels_to_add[tuple(new_pos)] = v
-	
-	pixels = [[0 for _ in range(img_width+5)] for _ in range(img_height+5)]
-	
+
+	pixels = [[0 for _ in range(img_width + 5)] for _ in range(img_height + 5)]
+
 	for k, v in pixels_to_add.items():
 		if v == 1:
 			pixels[k[1]][k[0]] = 1
 
 	for y in range(img_height, -1, -1):
 		print("".join(map(str, pixels[y])).replace("0", " ").replace("1", "\u2588"))
+
 
 print(part1())
 part2()
