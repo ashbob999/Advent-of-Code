@@ -17,6 +17,8 @@ if not isfile(file_name):
 
 from math import sqrt, floor
 
+fact = [1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600, 6227020800, 87178291200]
+
 number = int(open(file_name).read().strip())
 
 
@@ -51,9 +53,20 @@ def run_both_parts():
 	answer1 = 0
 	answer2 = 0
 
-	i = 1
+	# given that div_sum(n!) has the highest divisor sum from 1->n!
+	# we can use use div_sum(n!) to find n1 and n2 where ds(n1!) <= ds(t) <= ds(n2!)
+
+	min_target = min(min_div_sum1, min_div_sum2)
+	start_i = 1
+	for i in range(len(fact) - 1):
+		if divisor_sum_both(fact[i])[1] <= min_target < divisor_sum_both(fact[i + 1])[0]:
+			start_i = fact[i]
+			break
+
+	i = start_i
 	while True:
 		s = divisor_sum_both(i)
+		# print(s)
 		if not found1 and s[0] >= min_div_sum1:
 			answer1 = i
 			found1 = True
