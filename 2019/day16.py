@@ -15,20 +15,20 @@ if not isfile(file_name):
 
 	get_input_file()
 
-from numpy import repeat
-
 input_num = open(file_name).read().strip()
 
 default = [0, 1, 0, -1]
 
+shifted_mem = {}
+
 
 def get_phase(num):
-	# print(num)
-	repeated = repeat(default, num)
-
-	shifted = list(repeat(default, num))
+	if num in shifted_mem:
+		return shifted_mem[num]
+	shifted = ([0] * num) + ([1] * num) + ([0] * num) + ([-1] * num)
 	shifted.append(shifted.pop(0))
 
+	shifted_mem[num] = shifted
 	return shifted
 
 
@@ -37,19 +37,20 @@ def get_output(inp_str_, times):
 	length = len(inp_str)
 
 	for t_ in range(times):
-		output_values = []
+		output_values = [0] * length
 
 		for i in range(length):
 			phase = get_phase(i + 1)
+			phase_len = (i + 1) * 4
 
 			total = 0
 
 			for n in range(length):
-				n_ = n % len(phase)
+				n_ = n % phase_len
 
 				total += inp_str[n] * phase[n_]
 
-			output_values.append(abs(total) % 10)
+			output_values[i] = abs(total) % 10
 
 		inp_str = output_values.copy()
 
@@ -74,9 +75,9 @@ def get_fft_v2(signal_, times):
 	for i in range(times):
 		total = last_num
 
-		for i in reversed(range(length)):
-			total += signal[i]
-			signal[i] = total % 10
+		for j in reversed(range(length)):
+			total += signal[j]
+			signal[j] = total % 10
 
 	return signal
 
