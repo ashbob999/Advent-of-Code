@@ -15,8 +15,7 @@ if not isfile(file_name):
 
 	get_input_file(session_path=['..', '.env'])
 
-# import re
-import regex as re
+import re
 
 data = to_list(mf=str, sep="\n\n")
 
@@ -34,9 +33,6 @@ numbers = set("0123456789")
 def part1():
 	rule0 = rules[0] + " "
 
-	# while set(rule0) & numbers:
-	#	rule0 = re.sub(" \d+", rep, rule0)
-
 	while set(rule0) & numbers:
 		vals = rule0.split(" ")
 		for i in range(len(vals)):
@@ -51,14 +47,6 @@ def part1():
 
 	reg = re.compile(rule0, re.MULTILINE)
 
-	"""
-	matched = 0
-	for msg in messages:
-		if reg.match(msg):
-			matched += 1
-
-	print(matched)
-	"""
 	print(len(reg.findall(data[1])))
 
 
@@ -82,7 +70,7 @@ def part2():
 	reg1 = " (( 42 )+ ) "
 
 	r2 = " 42 31 | 42 11 31"
-	reg2 = " (?P<rec> 42 (?&rec)* 31 ) "
+	reg2 = " 42 ( 42 ( 42 ( 42 ( 42 ( 42 ( 42 ( 42 ( 42 31 )? 31 )? 31 )? 31 )? 31 )? 31 )? 31 )? 31 )? 31 "
 
 	rules[42] = expand(42)
 	rules[31] = expand(31)
@@ -104,14 +92,6 @@ def part2():
 
 	reg = re.compile(rule0, re.MULTILINE)
 
-	"""
-	matched = 0
-	for msg in messages:
-		if reg.match(msg):
-			matched += 1
-
-	print(matched)
-	"""
 	print(len(reg.findall(data[1])))
 
 
