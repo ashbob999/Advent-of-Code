@@ -1,13 +1,19 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day18.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
-	get_input_file(session_path=['..', '.env'])
 
+	get_input_file(session_path=['..', '.env'])
 
 data = open(file_name).read().strip()
 
@@ -66,6 +72,7 @@ def se(e):
 
 	return e[0]
 
+
 def part1():
 	t = 0
 
@@ -86,7 +93,7 @@ def se2(e_og):
 	while len(e) > 1:
 		if "+" in e:
 			i = e.index("+")
-			e[i-1:i+2] = [e[i-1] + e[i+1]]
+			e[i - 1:i + 2] = [e[i - 1] + e[i + 1]]
 		else:
 			e[0:3] = [e[0] * e[2]]
 

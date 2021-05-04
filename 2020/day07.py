@@ -1,13 +1,19 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day07.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
-	get_input_file(session_path=['..', '.env'])
 
+	get_input_file(session_path=['..', '.env'])
 
 data = to_list(mf=str, sep="\n")
 
@@ -37,6 +43,7 @@ for rule in data:
 
 done = {}
 
+
 def r(curr, tar):
 	if curr in done:
 		return done[curr]
@@ -63,6 +70,7 @@ def part1():
 
 done2 = {}
 
+
 def r2(curr):
 	if curr in done2:
 		return done2[curr]
@@ -74,8 +82,10 @@ def r2(curr):
 	done2[curr] = tot
 	return tot
 
+
 def part2():
 	print(r2("shinygold"))
+
 
 part1()
 part2()

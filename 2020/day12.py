@@ -1,15 +1,22 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day12.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file(session_path=['..', '.env'])
 
-
 data = to_list(mf=str)
+
 
 def part1():
 	start = [0, 0]
@@ -65,15 +72,15 @@ def part2():
 
 		if mov == "L":
 			way = [[way[0], way[1]],
-					[-way[1], way[0]],
-					[-way[0], -way[1]],
-					[way[1], -way[0]]][-amt // 90]
+			       [-way[1], way[0]],
+			       [-way[0], -way[1]],
+			       [way[1], -way[0]]][-amt // 90]
 
 		elif mov == "R":
 			way = [[way[0], way[1]],
-					[-way[1], way[0]],
-					[-way[0], -way[1]],
-					[way[1], -way[0]]][amt // 90]
+			       [-way[1], way[0]],
+			       [-way[0], -way[1]],
+			       [way[1], -way[0]]][amt // 90]
 
 		elif mov == "N":
 			way[1] -= amt
@@ -90,7 +97,6 @@ def part2():
 		elif mov == "F":
 			start[0] += way[0] * amt
 			start[1] += way[1] * amt
-
 
 	print(abs(start[0]) + abs(start[1]))
 

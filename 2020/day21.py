@@ -1,19 +1,21 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day21.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file(session_path=['..', '.env'])
 
 data = to_list(mf=str)
-
-adata = """mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
-trh fvjkl sbzzf mxmxvkd (contains dairy)
-sqjhc fvjkl (contains soy)
-sqjhc mxmxvkd sbzzf (contains fish)""".split("\n")
 
 meals = []
 ings_count = {}
@@ -41,7 +43,7 @@ for d in data:
 
 	meals.append((set(ings), set(aller)))
 
-#print(poss_allers)
+# print(poss_allers)
 
 all_ings = set()
 all_allers = set()
@@ -51,6 +53,7 @@ for m in meals:
 	all_allers |= m[1]
 
 aller_match = {k: None for k in all_allers}
+
 
 def part1():
 	while True:
@@ -69,7 +72,7 @@ def part1():
 		if changed == 0:
 			break
 
-	#print(aller_match)
+	# print(aller_match)
 
 	c_ = 0
 	for i, c in ings_count.items():
@@ -77,6 +80,7 @@ def part1():
 			c_ += c
 
 	print(c_)
+
 
 def part2():
 	ings = list(aller_match.values())
@@ -89,6 +93,7 @@ def part2():
 	cdi = ",".join(ings)
 
 	print(cdi)
+
 
 part1()
 part2()

@@ -15,7 +15,7 @@ if not isfile(file_name):
 
 	get_input_file(session_path=['..', '.env'])
 
-data = "167248359"
+data = open(file_name).read().strip()
 
 nums = list(map(int, list(data)))
 
@@ -35,7 +35,7 @@ def part1():
 		min_v = min(numbers)
 		max_v = max(numbers)
 
-		dest = curr_val -1
+		dest = curr_val - 1
 		while dest not in numbers:
 			dest -= 1
 			if dest < min_v:
@@ -43,19 +43,17 @@ def part1():
 
 		di = numbers.index(dest)
 
-		numbers.insert(di +1, picked_up[0])
-		numbers.insert(di +2, picked_up[1])
-		numbers.insert(di +3, picked_up[2])
+		numbers.insert(di + 1, picked_up[0])
+		numbers.insert(di + 2, picked_up[1])
+		numbers.insert(di + 3, picked_up[2])
 
 		ci = numbers.index(curr_val) + 1
 		curr_val = numbers[ci % len(numbers)]
 
-		#print(numbers, curr_val)
-
 	ans = ""
 	ind = numbers.index(1)
 	for i in range(1, len(numbers)):
-		ans += str(numbers[(ind +i) % len(numbers)])
+		ans += str(numbers[(ind + i) % len(numbers)])
 	print(ans)
 
 
@@ -70,22 +68,21 @@ class Node:
 	def __repr__(self):
 		return self.__str__()
 
+
 def part2():
 	numbers = nums[:]
 	mv = max(numbers)
 	l = len(numbers)
 	size = 1_000_000
-	for i in range(mv +1, mv + 1 + size - l):
+	for i in range(mv + 1, mv + 1 + size - l):
 		numbers.append(i)
-
-	#print(numbers)
 
 	val_node = {}
 	st = Node(numbers[0])
 	val_node[numbers[0]] = st
 	curr = st
 	for v in numbers[1:]:
-		#if v % 100000 == 0: print(v)
+		# if v % 100000 == 0: print(v)
 		curr.next = Node(v)
 		val_node[v] = curr.next
 		curr = curr.next
@@ -127,8 +124,6 @@ def part2():
 			aft = dest.next
 
 		curr_node = curr_node.next
-
-		#print(curr_node)
 
 	on = val_node[1]
 	print(on.next, on.next.next)

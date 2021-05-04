@@ -20,8 +20,8 @@ data = to_list(mf=list)
 h = len(data)
 w = len(data[0])
 
-def part1():
 
+def part1():
 	floor = [v[:] for v in data]
 
 	while True:
@@ -38,15 +38,15 @@ def part1():
 					adj += 1
 				if x > 0 and floor[y][x - 1] == "#":
 					adj += 1
-				if x < w-1 and floor[y][x+1] == "#":
+				if x < w - 1 and floor[y][x + 1] == "#":
 					adj += 1
-				if y > 0 and x > 0 and floor[y-1][x-1] == "#":
+				if y > 0 and x > 0 and floor[y - 1][x - 1] == "#":
 					adj += 1
-				if y > 0 and x < w-1 and floor[y-1][x+1] == "#":
+				if y > 0 and x < w - 1 and floor[y - 1][x + 1] == "#":
 					adj += 1
-				if y < h-1 and x > 0 and floor[y+1][x-1] == "#":
+				if y < h - 1 and x > 0 and floor[y + 1][x - 1] == "#":
 					adj += 1
-				if y < h-1 and x < w-1 and floor[y+1][x+1] == "#":
+				if y < h - 1 and x < w - 1 and floor[y + 1][x + 1] == "#":
 					adj += 1
 
 				if floor[y][x] == "L" and adj == 0:

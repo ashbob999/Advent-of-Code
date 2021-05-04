@@ -1,18 +1,23 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day25.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file(session_path=['..', '.env'])
 
 import math
 
 data = to_list()
-
-adata = [5764801, 17807724]
 
 card_key = data[0]
 door_key = data[1]
@@ -24,11 +29,12 @@ door_key = data[1]
 
 p = 20201227
 
+
 def find_loop(key, p):
 	l = 1
 	b = 7
 	while b != key:
-		b = b*7 % p
+		b = b * 7 % p
 		l += 1
 
 	return l
@@ -37,9 +43,10 @@ def find_loop(key, p):
 def enc(key, loop, p):
 	v = 1
 	for i in range(loop):
-		v = v*key % p
+		v = v * key % p
 
 	return v
+
 
 def part1():
 	card_loop = find_loop(card_key, p)

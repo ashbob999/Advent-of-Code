@@ -19,8 +19,8 @@ data = to_list(mf=str)
 
 tiles = {}
 
-def part1():
 
+def part1():
 	for t in data:
 		start = [0, 0]
 
@@ -31,19 +31,19 @@ def part1():
 				i += 1
 			elif t[i] == "w":
 				start[0] -= 2
-				i+= 1
+				i += 1
 			elif t[i] == "s":
 				start[1] += 1
-				if t[i+1] == "e":
+				if t[i + 1] == "e":
 					start[0] += 1
-				elif t[i+1] == "w":
+				elif t[i + 1] == "w":
 					start[0] -= 1
 				i += 2
 			elif t[i] == "n":
 				start[1] -= 1
-				if t[i+1] == "e":
+				if t[i + 1] == "e":
 					start[0] += 1
-				elif t[i+1] == "w":
+				elif t[i + 1] == "w":
 					start[0] -= 1
 				i += 2
 
@@ -56,14 +56,12 @@ def part1():
 	for k, v in tiles.items():
 		if v == 1:
 			count += 1
-		#print(k, v)
 
 	print(count)
 
+
 adj = ((-2, 0), (2, 0), (-1, -1), (1, -1), (-1, 1), (1, 1))
 
-
-# print(len(set(adj)))
 
 def part2():
 	global tiles
@@ -94,18 +92,13 @@ def part2():
 
 		tiles = new_tiles2
 
-	# cc = 0
-	# for k, v in tiles.items():
-	# 	if v == 1:
-	# 		cc += 1
-	# print(i+1, cc)
-
 	count = 0
 	for t, v in tiles.items():
 		if v == 1:
 			count += 1
 
 	print(count)
+
 
 part1()
 part2()

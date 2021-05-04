@@ -15,7 +15,6 @@ if not isfile(file_name):
 
 	get_input_file(session_path=['..', '.env'])
 
-# data = to_list(mf=str)
 data = open(file_name).read().strip().split("\n")
 
 max_n = (1 << 36) - 1
@@ -61,11 +60,6 @@ def part1():
 
 from itertools import product
 
-from timeit import default_timer as dt
-
-ct = 0
-cc = 0
-
 
 def part2():
 	global ct, cc
@@ -90,7 +84,6 @@ def part2():
 				else:
 					x_indexes.append(i)
 
-			t = dt()
 			for c in product((0, 1), repeat=len(x_indexes)):
 				val = index
 
@@ -105,12 +98,8 @@ def part2():
 				# print(val)
 				mem[val] = num
 
-			ct += dt() - t
-
 	print(sum(mem.values()))
 
 
 part1()
 part2()
-print(ct)
-print(cc)

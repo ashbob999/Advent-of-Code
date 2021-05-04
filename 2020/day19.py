@@ -1,14 +1,21 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day19.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file(session_path=['..', '.env'])
 
-#import re
+# import re
 import regex as re
 
 data = to_list(mf=str, sep="\n\n")
@@ -27,7 +34,7 @@ numbers = set("0123456789")
 def part1():
 	rule0 = rules[0] + " "
 
-	#while set(rule0) & numbers:
+	# while set(rule0) & numbers:
 	#	rule0 = re.sub(" \d+", rep, rule0)
 
 	while set(rule0) & numbers:
@@ -54,6 +61,7 @@ def part1():
 	"""
 	print(len(reg.findall(data[1])))
 
+
 def expand(i):
 	rule = rules[i]
 	while set(rule) & numbers:
@@ -65,6 +73,7 @@ def expand(i):
 		rule = " ".join(vals)
 
 	return rule
+
 
 def part2():
 	rule0 = rules[0] + " "

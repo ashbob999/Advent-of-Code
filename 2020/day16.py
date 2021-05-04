@@ -110,7 +110,6 @@ def part2():
 			if val:
 				poss[i].append(name)
 
-
 	corr = [None] * len(vt[0])
 	while None in corr:
 		for k, v in poss.items():
@@ -131,6 +130,7 @@ def part2():
 			p *= parsed_tickets[-1][i]
 
 	print(p)
+
 
 part1()
 part2()

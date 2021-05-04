@@ -1,18 +1,26 @@
 from typing import Callable
 from os.path import isfile, join as path_join
+
 file_name = path_join('input', 'day20.txt')
+
+
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+
+
 def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+
 
 if not isfile(file_name):
 	from aoc import get_input_file
+
 	get_input_file(session_path=['..', '.env'])
 
 from math import sqrt
 
 data = to_list(mf=str, sep="\n\n")
 
-adata = "Tile 2311:_..##.#..#._##..#....._#...##..#._####.#...#_##.##.###._##...#.###_.#.#.#..##_..#....#.._###...#.#._..###..###__Tile 1951:_#.##...##._#.####...#_.....#..##_#...######_.##.#....#_.###.#####_###.##.##._.###....#._..#.#..#.#_#...##.#..__Tile 1171:_####...##._#..##.#..#_##.#..#.#._.###.####._..###.####_.##....##._.#...####._#.##.####._####..#..._.....##...__Tile 1427:_###.##.#.._.#..#.##.._.#.##.#..#_#.#.#.##.#_....#...##_...##..##._...#.#####_.#.####.#._..#..###.#_..##.#..#.__Tile 1489:_##.#.#...._..##...#.._.##..##..._..#...#..._#####...#._#..#.#.#.#_...#.#.#.._##.#...##._..##.##.##_###.##.#..__Tile 2473:_#....####._#..#.##..._#.##..#..._######.#.#_.#...#.#.#_.#########_.###.#..#._########.#_##...##.#._..###.#.#.__Tile 2971:_..#.#....#_#...###..._#.#.###..._##.##..#.._.#####..##_.#..####.#_#..#.#..#._..####.###_..#.#.###._...#.#.#.#__Tile 2729:_...#.#.#.#_####.#...._..#.#....._....#..#.#_.##..##.#._.#.####..._####.#.#.._##.####..._##..#.##.._#.##...##.__Tile 3079:_#.#.#####._.#..######_..#......._######...._####.#..#._.#...#.##._#.#####.##_..#.###..._..#......._..#.###...".replace("_", "\n").split("\n\n")
+adata = "Tile 2311:_..##.#..#._##..#....._#...##..#._####.#...#_##.##.###._##...#.###_.#.#.#..##_..#....#.._###...#.#._..###..###__Tile 1951:_#.##...##._#.####...#_.....#..##_#...######_.##.#....#_.###.#####_###.##.##._.###....#._..#.#..#.#_#...##.#..__Tile 1171:_####...##._#..##.#..#_##.#..#.#._.###.####._..###.####_.##....##._.#...####._#.##.####._####..#..._.....##...__Tile 1427:_###.##.#.._.#..#.##.._.#.##.#..#_#.#.#.##.#_....#...##_...##..##._...#.#####_.#.####.#._..#..###.#_..##.#..#.__Tile 1489:_##.#.#...._..##...#.._.##..##..._..#...#..._#####...#._#..#.#.#.#_...#.#.#.._##.#...##._..##.##.##_###.##.#..__Tile 2473:_#....####._#..#.##..._#.##..#..._######.#.#_.#...#.#.#_.#########_.###.#..#._########.#_##...##.#._..###.#.#.__Tile 2971:_..#.#....#_#...###..._#.#.###..._##.##..#.._.#####..##_.#..####.#_#..#.#..#._..####.###_..#.#.###._...#.#.#.#__Tile 2729:_...#.#.#.#_####.#...._..#.#....._....#..#.#_.##..##.#._.#.####..._####.#.#.._##.####..._##..#.##.._#.##...##.__Tile 3079:_#.#.#####._.#..######_..#......._######...._####.#..#._.#...#.##._#.#####.##_..#.###..._..#......._..#.###...".replace(
+	"_", "\n").split("\n\n")
 
 tiles = [t.split("\n") for t in data]
 tiles = {int(t[0].split(" ")[1][:-1]): t[1:] for t in tiles}
@@ -23,7 +31,7 @@ size = int(sqrt(len(tiles)))
 tw = len(tiles[2297][0])
 th = len(tiles[2297])
 
-#print(len(tiles), size, tw, th)
+# print(len(tiles), size, tw, th)
 
 sides = {}
 all_sides = set()
@@ -51,6 +59,7 @@ m_bords = set()
 c_id = {2: [], 3: [], 4: []}
 all_sides = set()
 
+
 def part1():
 	for k, v in sides.items():
 		m_count[k] = set()
@@ -58,35 +67,39 @@ def part1():
 			if k == k2:
 				continue
 			if v & v2:
-				m_bords.add((frozenset((k, k2)), frozenset(v&v2)))
+				m_bords.add((frozenset((k, k2)), frozenset(v & v2)))
 				m_count[k].add(k2)
-				all_sides.update(v&v2)
+				all_sides.update(v & v2)
 
 	p = 1
 
-	#print(len(m_bords))
+	# print(len(m_bords))
 	for id, ms in m_count.items():
-		#print(id, len(ms))
+		# print(id, len(ms))
 		c_id[len(ms)].append(id)
 		if len(ms) == 2:
 			p *= id
 
-	#for i in c_id.keys():
+	# for i in c_id.keys():
 	#	print(i, len(c_id[i]))
 
 	print(p)
 
+
 image = [[None] * size for _ in range(size)]
 img_ids = [[None] * size for _ in range(size)]
 
+
 def flip(tile, dir):
 	if dir == 0:
-		return [tile[i] for i in range(len(tile)-1, -1, -1)]
+		return [tile[i] for i in range(len(tile) - 1, -1, -1)]
 	elif dir == 1:
 		return [t[::-1] for t in tile]
 
+
 def transpose(tile):
 	return ["".join(x) for x in zip(*tile)]
+
 
 def rotate(tile, dir):
 	if dir == 0:
@@ -99,21 +112,23 @@ def rotate(tile, dir):
 def get_adj(id):
 	return list(filter(lambda x: id in x[0], m_bords))
 
-locked = {id:[False, False, False, False] for id in tiles.keys()}
+
+locked = {id: [False, False, False, False] for id in tiles.keys()}
 
 been_placed = set()
 
+
 def get_next(adj, pid, count):
 	for ad in adj:
-		#print(ad)
+		# print(ad)
 		n_id = list(ad[0] ^ set([pid]))[0]
 		if n_id in c_id[count] and n_id not in been_placed:
 			return n_id
 
 
 def fill_row(start, end, col, count):
-	for x in range(start, end-1):
-		pid = img_ids[col][x-1]
+	for x in range(start, end - 1):
+		pid = img_ids[col][x - 1]
 		adj = get_adj(pid)
 		curr_id = get_next(adj, pid, count)
 
@@ -121,9 +136,10 @@ def fill_row(start, end, col, count):
 			img_ids[col][x] = curr_id
 			been_placed.add(curr_id)
 
+
 def fill_col(start, end, row, count):
-	for x in range(start, end-1):
-		pid = img_ids[x-1][row]
+	for x in range(start, end - 1):
+		pid = img_ids[x - 1][row]
 		adj = get_adj(pid)
 		curr_id = get_next(adj, pid, count)
 
@@ -134,8 +150,8 @@ def fill_col(start, end, row, count):
 
 def get_side(x, y, loc):
 	# assumes pid orientation is correct
-	#cadj = get_adj(cid)
-	#sides = list(filter(lambda x: cid in x[0] and pid in x[0], m_bords))
+	# cadj = get_adj(cid)
+	# sides = list(filter(lambda x: cid in x[0] and pid in x[0], m_bords))
 
 	if loc == 0:
 		return image[y][x][0]
@@ -145,6 +161,7 @@ def get_side(x, y, loc):
 		return "".join([t[-1] for t in image[y][x]])
 	elif loc == 3:
 		return "".join([t[0] for t in image[y][x]])
+
 
 def gs(tile, loc):
 	if loc == 0:
@@ -170,12 +187,13 @@ def o_to_fit(cid, side, loc):
 	elif loc in (1, 3):
 		return flip(tile, 0)
 
+
 def part2():
 	c1 = c_id[2][0]
 	c1_tile = tiles[c1]
 
 	c1_adj = get_adj(c1)
-	#print(c1_adj)
+	# print(c1_adj)
 
 	# top left
 	img_ids[0][0] = c1
@@ -212,10 +230,10 @@ def part2():
 	been_placed.add(img_ids[-1][-1])
 
 	# fill guts
-	for y in range(1, size-1):
-		for x in range(1, size-1):
-			pid1 = img_ids[y-1][x]
-			pid2 = img_ids[y][x-1]
+	for y in range(1, size - 1):
+		for x in range(1, size - 1):
+			pid1 = img_ids[y - 1][x]
+			pid2 = img_ids[y][x - 1]
 
 			adj1 = get_adj(pid1)
 			adj2 = get_adj(pid2)
@@ -231,7 +249,7 @@ def part2():
 			img_ids[y][x] = n_id
 			been_placed.add(n_id)
 
-	#for r in img_ids:
+	# for r in img_ids:
 	#	print(r)
 
 	# rotate first tile to match
@@ -256,7 +274,7 @@ def part2():
 	for x in range(1, size):
 		cid = img_ids[0][x]
 
-		side = get_side(x-1, 0, 1)
+		side = get_side(x - 1, 0, 1)
 
 		ct = o_to_fit(cid, side, 3)
 
@@ -266,7 +284,7 @@ def part2():
 	for y in range(1, size):
 		cid = img_ids[y][0]
 
-		side = get_side(0, y-1, 2)
+		side = get_side(0, y - 1, 2)
 
 		ct = o_to_fit(cid, side, 0)
 
@@ -276,7 +294,7 @@ def part2():
 		for x in range(1, size):
 			cid = img_ids[y][x]
 
-			side = get_side(x, y-1, 2)
+			side = get_side(x, y - 1, 2)
 
 			ct = o_to_fit(cid, side, 0)
 
@@ -287,7 +305,6 @@ def part2():
 		for x in range(len(image[0])):
 			tile = image[y][x]
 			image[y][x] = [r[1:-1] for r in tile[1:-1]]
-
 
 	# merge them
 	# 3d -> 2d
@@ -308,43 +325,44 @@ def part2():
 	# check for monsters
 	smw = 20
 	smh = 3
+
 	def is_monster(x, y, image):
-		if image[y+1][x] == ".":
+		if image[y + 1][x] == ".":
 			return False
-		if image[y+2][x+1] == ".":
+		if image[y + 2][x + 1] == ".":
 			return False
-		if image[y+2][x+4] == ".":
+		if image[y + 2][x + 4] == ".":
 			return False
-		if image[y+1][x+5] == ".":
+		if image[y + 1][x + 5] == ".":
 			return False
-		if image[y+1][x+6] == ".":
+		if image[y + 1][x + 6] == ".":
 			return False
-		if image[y+2][x+7] == ".":
+		if image[y + 2][x + 7] == ".":
 			return False
-		if image[y+2][x+10] == ".":
+		if image[y + 2][x + 10] == ".":
 			return False
-		if image[y+1][x+11] == ".":
+		if image[y + 1][x + 11] == ".":
 			return False
-		if image[y+1][x+12] == ".":
+		if image[y + 1][x + 12] == ".":
 			return False
-		if image[y+2][x+13] == ".":
+		if image[y + 2][x + 13] == ".":
 			return False
-		if image[y+2][x+16] == ".":
+		if image[y + 2][x + 16] == ".":
 			return False
-		if image[y+1][x+17] == ".":
+		if image[y + 1][x + 17] == ".":
 			return False
-		if image[y+1][x+18] == ".":
+		if image[y + 1][x + 18] == ".":
 			return False
-		if image[y][x+18] == ".":
+		if image[y][x + 18] == ".":
 			return False
-		if image[y+1][x+19] == ".":
+		if image[y + 1][x + 19] == ".":
 			return False
 		return True
 
 	def get_count(image):
 		count = 0
-		for y in range(len(image)-smh):
-			for x in range(len(image[0])-smw):
+		for y in range(len(image) - smh):
+			for x in range(len(image[0]) - smw):
 				if is_monster(x, y, image):
 					count += 1
 		return count
@@ -369,6 +387,7 @@ def part2():
 	hash_count = sum(x.count("#") for x in new_image)
 
 	print(hash_count - sm_count)
+
 
 part1()
 part2()
