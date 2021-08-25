@@ -51,7 +51,7 @@ public:
 	int length;
 
 	result_type result;
-	pair<string, string> stringResult;
+	pair<char*, char*> stringResult;
 
 	BaseDay(string _day);
 	virtual ~BaseDay();

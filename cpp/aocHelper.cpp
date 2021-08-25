@@ -3,6 +3,9 @@
 BaseDay::BaseDay(string _day) : time(0), dayStr(_day)
 {
 	filename = FILEPATH + "day" + dayStr + ".txt";
+
+	stringResult.first = new char[100]{};
+	stringResult.second = new char[100]{};
 }
 
 void BaseDay::load_input()
@@ -84,6 +87,10 @@ double BaseDay::run()
 
 BaseDay::~BaseDay()
 {
+	unload_input();
+
+	delete[] stringResult.first;
+	delete[] stringResult.second;
 	//delete[] input_start;
 }
 
@@ -105,7 +112,7 @@ void runDays(vector<BaseDay*> days, runtimeOptions options)
 	cout << "               Min            Avg            Max   " << endl;
 	cout << "===================================================" << endl;
 
-	for (auto& day : days)
+	for (auto& day: days)
 	{
 		day->load_input();
 
