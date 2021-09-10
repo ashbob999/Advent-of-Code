@@ -213,7 +213,7 @@ ce OR cd -> cf
 il AND in -> io
 dd RSHIFT 1 -> dw
 NOT lo -> lp
-c LSHIFT 1 -> t
+c LSHIFT 1 -> type
 dd RSHIFT 3 -> df
 dd RSHIFT 5 -> dg
 lh AND li -> lk
@@ -302,7 +302,7 @@ NOT l -> m
 bp OR bq -> br
 g AND i -> j
 br AND bt -> bu
-t OR s -> u
+type OR s -> u
 hz RSHIFT 5 -> ic
 gk AND gq -> gs
 fl LSHIFT 1 -> gf
