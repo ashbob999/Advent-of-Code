@@ -7,6 +7,7 @@
 #include <cstring>
 #include <cstdio>
 #include <cstdint>
+#include <cmath>
 #include <vector>
 #include <array>
 #include <set>
