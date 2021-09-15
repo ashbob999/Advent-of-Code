@@ -21,6 +21,11 @@
 #include "day18.cpp"
 #include "day19.cpp"
 #include "day20.cpp"
+#include "day21.cpp"
+#include "day22.cpp"
+#include "day23.cpp"
+#include "day24.cpp"
+#include "day25.cpp"
 
 using namespace std;
 
@@ -45,9 +50,14 @@ int main()
 	Day17* d17 = new Day17(); // done
 	Day18* d18 = new Day18(); // done slow
 	Day19* d19 = new Day19(); // done
-	Day20* d20 = new Day20(); // 
+	Day20* d20 = new Day20(); // done slow
+	Day21* d21 = new Day21(); // done
+	Day22* d22 = new Day22(); // done
+	Day23* d23 = new Day23(); // done
+	Day24* d24 = new Day24(); // done slow
+	Day25* d25 = new Day25(); // done slow
 
-	auto cd = d20;
+	auto cd = d24;
 
 	vector<BaseDay*> days = {
 			cd
