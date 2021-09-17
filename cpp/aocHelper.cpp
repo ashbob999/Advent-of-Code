@@ -105,12 +105,12 @@ void runDays(vector<BaseDay*> days, runtimeOptions options)
 	double minTotal = 0, avgTotal = 0, maxTotal = 0;
 	int repetitions = options.repetitions;
 
-	//       ,        Min    ,        Avg    ,        Max   ,
-	//=======,===============,===============,==============,
-	//Day 01:, 000000.000 us,, 000000.000 us,, 000000.000 us,
+	//       ,         Min    ,         Avg    ,         Max   ,
+	//=======,================,================,===============,
+	//Day 01:, 0000000.000 us,, 0000000.000 us,, 0000000.000 us,
 
-	cout << "               Min            Avg            Max   " << endl;
-	cout << "===================================================" << endl;
+	cout << "                Min             Avg             Max   " << endl;
+	cout << "======================================================" << endl;
 
 	for (auto& day: days)
 	{
@@ -133,11 +133,11 @@ void runDays(vector<BaseDay*> days, runtimeOptions options)
 		maxTotal += maxVal;
 
 		cout << "Day " << day->dayStr << ": ";
-		cout << right << setw(10) << setfill(' ') << fixed << setprecision(3) << minVal;
+		cout << right << setw(11) << setfill(' ') << fixed << setprecision(3) << minVal;
 		cout << " us, ";
-		cout << right << setw(10) << setfill(' ') << fixed << setprecision(3) << avgVal;
+		cout << right << setw(11) << setfill(' ') << fixed << setprecision(3) << avgVal;
 		cout << " us, ";
-		cout << right << setw(10) << setfill(' ') << fixed << setprecision(3) << maxVal;
+		cout << right << setw(11) << setfill(' ') << fixed << setprecision(3) << maxVal;
 		cout << " us";
 
 		cout << endl;
@@ -145,13 +145,13 @@ void runDays(vector<BaseDay*> days, runtimeOptions options)
 		day->unload_input();
 	}
 
-	cout << "===================================================" << endl;
+	cout << "======================================================" << endl;
 	cout << " Total: ";
-	cout << right << setw(10) << setfill(' ') << fixed << setprecision(3) << minTotal;
+	cout << right << setw(11) << setfill(' ') << fixed << setprecision(3) << minTotal;
 	cout << " us, ";
-	cout << right << setw(10) << setfill(' ') << fixed << setprecision(3) << avgTotal;
+	cout << right << setw(11) << setfill(' ') << fixed << setprecision(3) << avgTotal;
 	cout << " us, ";
-	cout << right << setw(10) << setfill(' ') << fixed << setprecision(3) << maxTotal;
+	cout << right << setw(11) << setfill(' ') << fixed << setprecision(3) << maxTotal;
 	cout << " us";
 
 	cout << endl;
