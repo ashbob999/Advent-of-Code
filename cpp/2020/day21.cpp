@@ -238,7 +238,8 @@ public:
 
 		res.pop_back();
 
-		stringResult.second = res;
+		//stringResult.second = res;
+		memcpy(stringResult.second, res.c_str(), res.length());
 
 		return { part1, part2 };
 	}
