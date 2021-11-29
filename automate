@@ -1,0 +1,33 @@
+#!bin/bash
+
+if [[ $# -gt 2 ]]; then
+	exit 1
+fi
+
+# get year and day inputs
+if [[ $# -eq 2 ]]; then
+	year=$1
+	day=$(printf "%02.0f" $2)
+fi
+
+if [[ $# -eq 1 ]]; then
+	year=$(date +%Y)
+	day=$(printf "%02.0f" $1)
+fi
+
+if [[ $# -eq 0 ]]; then
+	year=$(date +%Y)
+	day=$(date +%d)
+fi
+
+# generate the day file
+python generate.py -y $year -d $day --input --session
+
+# open the day file
+termux-open $year/day$day.py
+
+# change to year dir
+cd $year/
+
+# monitor the day file, and run on changes
+echo "day${day}.py" | entr bash -c "printf \"\n\"; python day$day.py"
