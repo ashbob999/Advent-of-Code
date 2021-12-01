@@ -11,6 +11,10 @@ I started this in 2019 competitively, but I am only aiming for private leaderboa
 they are stored in google sheets here:
 [read-only link](https://docs.google.com/spreadsheets/d/1ZAO14ONV_PkkaCCdpb2raCiHng1Zp0MSVFr3sX6cdSw/edit?usp=sharing)
 
+done with either:
+- python.exe -m cProfile dayXX.py
+- python.exe -m timeit -p -s "print=lambda *x: None" -c "$(cat dayXX.py)"
+
 ## Running python solutions
 
 To generate current day files:
