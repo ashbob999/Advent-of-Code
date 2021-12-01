@@ -20,9 +20,6 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 
 		# writes the boilerplate code the the day file
 		with open(start_path + "day" + day + ".py", "w") as f:
-			# import Callable from typing, so we don't get an error, when calling with mf=str
-			f.write("from typing import Callable\n")
-
 			# import the isfile, and join from os.path
 			f.write("from os.path import isfile, join as path_join\n")
 
@@ -31,13 +28,13 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 
 			# function to get the input as a list
 			f.write(
-				"def to_list(mf: Callable = int, sep='\\n'): "
+				"def to_list(mf=int, sep='\\n'): "
 				"return [mf(x) for x in open(file_name).read().split(sep) if x]")
 			f.write("\n")
 
 			# function to get the input as a generator
 			f.write(
-				"def to_gen(mf: Callable = int, sep='\\n'): "
+				"def to_gen(mf=int, sep='\\n'): "
 				"return (mf(x) for x in open(file_name).read().split(sep) if x)")
 			f.write("\n")
 
