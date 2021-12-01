@@ -28,13 +28,13 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 
 			# function to get the input as a list
 			f.write(
-				"def to_list(mf=int, sep='\\n'): "
+				"def to_list(mf: object = int, sep='\\n'): "
 				"return [mf(x) for x in open(file_name).read().split(sep) if x]")
 			f.write("\n")
 
 			# function to get the input as a generator
 			f.write(
-				"def to_gen(mf=int, sep='\\n'): "
+				"def to_gen(mf: object = int, sep='\\n'): "
 				"return (mf(x) for x in open(file_name).read().split(sep) if x)")
 			f.write("\n")
 
