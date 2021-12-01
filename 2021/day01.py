@@ -14,15 +14,20 @@ data  = to_list(sep="\n")
 #data=list(map(int, """199 200 208 210 200 207 240 269 260 263""".split(" ")))
 
 def part1():
+	return sum(1 for a,b in zip(data, data[1:]) if a<b)
+	"""
 	c= 0
 	for i in range(len(data)-1):
 		if data[i] < data[i+1]:
 			c +=1
 			
 	return c
+	"""
 
 
 def part2():
+	return sum(1 for a, b in zip(data, data[3:]) if a < b)
+	"""
 	c=0
 	sp=data[0]+data[1]+data[2]
 	for i in range(3,len(data)):
@@ -33,6 +38,7 @@ def part2():
 		sp=sc
 		
 	return c
+	"""
 
 
 p1()
