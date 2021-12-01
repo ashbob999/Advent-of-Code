@@ -2,7 +2,7 @@ from typing import Callable
 from os.path import isfile, join as path_join
 
 file_name = path_join('input', 'day20.txt')
-
+file_name = path_join("..", "..", "..", "Download", "20-1.txt")
 
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
 
@@ -28,8 +28,11 @@ tiles = {int(t[0].split(" ")[1][:-1]): t[1:] for t in tiles}
 size = int(sqrt(len(tiles)))
 
 # 2297 / 2311
-tw = len(tiles[2297][0])
-th = len(tiles[2297])
+#tw = len(tiles[2297][0])
+#th = len(tiles[2297])
+tw = len(list(tiles.values())[0][0])
+th = len(list(tiles.values())[0])
+
 
 # print(len(tiles), size, tw, th)
 

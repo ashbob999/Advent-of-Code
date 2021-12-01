@@ -39,6 +39,14 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 			f.write(
 				"def to_gen(mf: Callable = int, sep='\\n'): "
 				"return (mf(x) for x in open(file_name).read().split(sep) if x)")
+			f.write("\n")
+
+			# function to print and return part1 result
+			f.write("def p1(*args): ans = part1(*args); print(ans); return ans")
+			f.write("\n")
+
+			# function to print and return part2 result
+			f.write("def p2(*args): ans = part2(*args); print(ans); return ans")
 			f.write("\n\n")
 
 			# stick imports and file creation inside an if statement
@@ -67,9 +75,9 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 			        "\n"
 			        "\tpass"
 			        "\n\n\n"
-			        "part1()"
+			        "p1()"
 			        "\n"
-			        "part2()"
+			        "p2()"
 			        "\n")
 
 			f.write(code)

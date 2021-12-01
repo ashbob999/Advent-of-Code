@@ -3,7 +3,6 @@ from typing import Callable
 
 file_name = path_join('input', 'day14.txt')
 
-
 def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
 
 
@@ -19,8 +18,8 @@ data = open(file_name).read().strip().split("\n")
 
 max_n = (1 << 36) - 1
 
-mem_0 = {}
-mem_1 = {}
+mem_0 = {i: ~(1<< (36-i-1)) for i in range(36)}
+mem_1 = {i: 1<< (36-i-1) for i in range(36)}
 
 parsed = []
 
