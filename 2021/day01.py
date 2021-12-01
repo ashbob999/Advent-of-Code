@@ -1,8 +1,7 @@
-from typing import Callable
 from os.path import isfile, join as path_join
 file_name = path_join('input', 'day01.txt')
-def to_list(mf: Callable = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
-def to_gen(mf: Callable = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+def to_list(mf: object = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+def to_gen(mf: object = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
 def p1(*args): ans = part1(*args); print(ans); return ans
 def p2(*args): ans = part2(*args); print(ans); return ans
 
