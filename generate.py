@@ -23,6 +23,12 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 			# import the isfile, and join from os.path
 			f.write("from os.path import isfile, join as path_join\n")
 
+			# import the path class from sys
+			f.write("from sys import path as sys_path\n")
+
+			# add parent directory to path
+			f.write("sys_path.insert(1, path_join(sys_path[0], '..'))\n")
+
 			# create the day input file name
 			f.write("file_name = path_join('input', 'day%s.txt')\n" % day)
 
