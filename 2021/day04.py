@@ -1,4 +1,6 @@
 from os.path import isfile, join as path_join
+from sys import path
+path.insert(1, path_join(path[0], '..'))
 file_name = path_join('input', 'day04.txt')
 def to_list(mf: object = int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
 def to_gen(mf: object = int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
@@ -9,24 +11,24 @@ if not isfile(file_name):
 	from aoc import get_input_file
 	get_input_file(session_path=['..', '.env'])
 
+from itertools import chain
+from utils import parsefile
 
-data = to_list(mf=str, sep="\n\n")
+numbers, *boards = parsefile(file_name, [[int, ","], 1, [[int], "\n"], 0, "\n\n"])
 
-numbers = list(map(int, data[0].split(",")))
-boards = [[[int(i) for i in r.strip().split(" ")] for r in b.strip().replace("  ", " ").split("\n")] for b in data[1:]]
-
+board_count = len(boards)
 w = len(boards[0][0])
 h = len(boards[0])
 
 def part1():
-	marked = [[[1 for i in range(len(r))] for r in b] for b in boards]
+	marked = [[[1 for i in range(w)] for r in b] for b in boards]
 	
 	used_nums = numbers[:]
 	
 	while len(used_nums):
 		num = used_nums.pop(0)
 		
-		for bi in range(len(boards)):
+		for bi in range(board_count):
 			b = boards[bi]
 			
 			for y in range(h):
@@ -34,12 +36,14 @@ def part1():
 					if b[y][x]==num:
 						marked[bi][y][x]=0
 						
-		for bi in range(len(marked)):
+		for bi in range(board_count):
 			found=False
-			if any(sum(r) == 0 for r in marked[bi]):
+			if any([1 not in r for r in chain(marked[bi], zip(*marked[bi]))]):
 				found = True
-			elif any(sum(r)==0 for r in zip(*marked[bi])):
-				found=True
+			# if any(1 not in r for r in marked[bi]):
+			# 	found = True
+			# elif any(1 not in r for r in zip(*marked[bi])):
+			# 	found=True
 				
 			if found:
 				b = boards[bi]
@@ -54,17 +58,17 @@ def part1():
 
 
 def part2():
-	marked = [[[1 for i in range(len(r))] for r in b] for b in boards]
+	marked = [[[1 for i in range(w)] for r in b] for b in boards]
 	
 	used_nums = numbers[:]
 	won=[]
 	
 	while len(used_nums):
-		if len(boards) == len(won):
+		if board_count == len(won):
 			break
 		num = used_nums.pop(0)
 		
-		for bi in range(len(boards)):
+		for bi in range(board_count):
 			b = boards[bi]
 			
 			for y in range(h):
@@ -72,12 +76,14 @@ def part2():
 					if b[y][x]==num:
 						marked[bi][y][x]=0
 						
-		for bi in range(len(marked)):
+		for bi in range(board_count):
 			found=False
-			if any(sum(r) == 0 for r in marked[bi]):
+			if any([1 not in r for r in chain(marked[bi], zip(*marked[bi]))]):
 				found = True
-			elif any(sum(r)==0 for r in zip(*marked[bi])):
-				found=True
+			# if any(1 not in r for r in marked[bi]):
+			# 	found = True
+			# elif any(1 not in r for r in zip(*marked[bi])):
+			# 	found=True
 				
 			if found:
 				if bi not in won:
