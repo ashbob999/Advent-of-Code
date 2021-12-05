@@ -13,19 +13,8 @@ if not isfile(file_name):
 
 from utils import parsefile
 
-#data = parsefile(file_name, [[[int, ","], 1, None, [int, ","]], "\n"])
+data = parsefile(file_name, [[[int, ","], 1, None, [int, ","]], "\n"])
 
-raw = open(file_name).read()
-
-data = []
-for l in raw.strip().split("\n"):
-	r = l.split()
-	
-	po1 = tuple(map(int, r[0].split(",")))
-	po2 = tuple(map(int, r[2].split(",")))
-	
-	data.append((po1, po2))
-	
 
 def part1():
 	points = {}
