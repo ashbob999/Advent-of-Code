@@ -13,7 +13,7 @@ if not isfile(file_name):
 
 from utils import parsefile
 
-data = parsefile(file_name, [[[int, ","], 1, None, [int, ","]], "\n"])
+data = parsefile(file_name, [[[int, ","], None, [int, ","]], "\n"])
 
 
 def part1():
