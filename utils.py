@@ -80,7 +80,7 @@ def parse(text: str, pattern: object = None):
 			func = None
 			count: int = 1
 
-			if callable(pattern[i]) or isinstance(pattern[i], (tuple, list)):
+			if callable(pattern[i]) or isinstance(pattern[i], (tuple, list)) or pattern[i] is None:
 				func = pattern[i]
 				i += 1
 
@@ -109,8 +109,9 @@ def parse(text: str, pattern: object = None):
 			new_sections = []
 
 			while section_i < len(sections) and curr_func_i < len(functions):
-				mapped_value = handle(curr_func[0], sections[section_i])
-				new_sections.append(mapped_value)
+				if curr_func[0] is not None:
+					mapped_value = handle(curr_func[0], sections[section_i])
+					new_sections.append(mapped_value)
 
 				if curr_func[1] > 0:
 					rem_times -= 1
