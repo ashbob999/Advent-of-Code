@@ -53,7 +53,10 @@ def parse(text: str, pattern: object = None):
 
 	# split the text into sections
 	if has_separator:
-		sections = text.split(pattern[-1])
+		if pattern[-1] == "":  # split by char
+			sections = list(text)
+		else:
+			sections = text.split(pattern[-1])
 	else:
 		sections = text.split()
 
@@ -170,3 +173,4 @@ if __name__ == '__main__':
 	# misc
 	assert parse("1 2 3 4 5", tuple(" ")) == ["1", "2", "3", "4", "5"]
 	assert parse("1 2 3 4 5", [" "]) == ["1", "2", "3", "4", "5"]
+	assert parse("12345", [int, ""]) == [1, 2, 3, 4, 5]
