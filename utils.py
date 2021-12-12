@@ -17,126 +17,184 @@ def parsefile(file_name: str, pattern):
 #                                                      (if only 1 function given, it will apply to all)
 # tuple = parse each section based on the given pattern
 
-def parse(text: str, pattern: object = None):
+def parse(text_: str, pattern_: object = None):
+	# memorisation variables
+	mem_function_list: dict = {}
+	mem_sub_function: dict = {}
+	mem_pattern_type: dict = {}  # 0=None 1=list/tuple, 2=callable, 2=str
+
+	iterable_type = tuple
+
 	# determines whether to call the map or parse function
-	def handle(sub_pattern, sub_sections):
-		if isinstance(sub_sections, (tuple, list)):  # handle multiple sections
-			if isinstance(sub_pattern, (tuple, list)):
-				return [parse(section, sub_pattern) for section in sub_sections]
-			elif callable(sub_pattern):
+	def handle_sub(sub_pattern, sub_sections, for_list: bool):
+		# print("handle_sub", sub_pattern, sub_sections)
+		if sub_pattern in mem_pattern_type:
+			t = mem_pattern_type[sub_pattern]
+		else:
+			t = 1 if isinstance(sub_pattern, iterable_type) else 2 if callable(sub_pattern) else 0
+			mem_pattern_type[sub_pattern] = t
+
+		if for_list and len(sub_sections) > 1:  # handle multiple sections
+			if t == 1:
+				return [do_parse(section, sub_pattern) for section in sub_sections]
+			elif t == 2:
 				return list(map(sub_pattern, sub_sections))
 			else:
 				return []
-		elif isinstance(sub_sections, str):  # handle a single section
-			if isinstance(sub_pattern, (tuple, list)):
-				return parse(sub_sections, sub_pattern)
-			elif callable(sub_pattern):
+		else:  # handle a single section
+			if t == 1:
+				if len(sub_sections) == 1:
+					sub_sections = sub_sections[0]
+				return do_parse(sub_sections, sub_pattern)
+			elif t == 2:
 				return sub_pattern(sub_sections)
 			else:
 				return ""
 
-	text = text.strip()
+	def create_function_list(pattern, has_separator: bool):
+		if pattern in mem_function_list:
+			return mem_function_list[pattern]
 
-	# option 0.A
-	if pattern is None:
-		return text
-
-	# option 0.B
-	if isinstance(pattern, (tuple, list)) and len(pattern) == 0:
-		return text
-
-	# is the pattern a tuple/list
-	is_list: bool = isinstance(pattern, (tuple, list))
-
-	# does the pattern specify a separator?
-	has_separator: bool = isinstance(pattern, (tuple, list)) and isinstance(pattern[-1], str)
-
-	# split the text into sections
-	if has_separator:
-		if pattern[-1] == "":  # split by char
-			sections = list(text)
-		else:
-			sections = text.split(pattern[-1])
-	else:
-		sections = text.split()
-
-	# option 1.B
-	if callable(pattern):
-		return list(map(pattern, sections))
-
-	# option 1.C
-	if isinstance(pattern, str):
-		if pattern == "":
-			return list(text)
-		else:
-			return text.split(pattern)
-
-	# option 1.A, 2
-	if isinstance(pattern, (tuple, list)) and len(pattern) == 1 + has_separator:
-		if len(pattern) == 1 and has_separator:  # ([sep])
-			return sections
-		elif pattern[0] is None:  # (None)
-			return sections
-		else:
-			return handle(pattern[0], sections)
-
-	# option 3, 4, 5, 6
-	if isinstance(pattern, (tuple, list)):
 		# list of tuples containing (function, times)
 		functions = []
 
 		i = 0
-		while i < len(pattern) - has_separator:
+		length = len(pattern) - has_separator
+
+		while i < length:
 			func = None
 			count: int = 1
 
-			if callable(pattern[i]) or isinstance(pattern[i], (tuple, list)) or pattern[i] is None:
+			if callable(pattern[i]) or isinstance(pattern[i], iterable_type) or pattern[i] is None:
 				func = pattern[i]
 				i += 1
 
-			if i < len(pattern) - has_separator and isinstance(pattern[i], int):
+			if i < length and isinstance(pattern[i], int):
 				count = max(pattern[i], 0)
 				i += 1
 
 			functions.append((func, count))
 
-		if len(functions) == 0:  # no functions given
-			return sections
-		elif len(functions) == 1:  # only 1 function given
-			if functions[0][1] == 0:
-				# return list(map(functions[0][0], sections))
-				return handle(functions[0][0], sections)
+		mem_function_list[pattern] = functions
+		return functions
+
+	def do_parse(text: str, pattern):
+		text = text.strip()
+
+		# option 0.A
+		if pattern is None:
+			return text
+
+		if pattern in mem_pattern_type:
+			pattern_type = mem_pattern_type[pattern]
+		else:
+			if isinstance(pattern, iterable_type):
+				pattern_type = 1
+			elif isinstance(pattern, str):
+				pattern_type = 3
 			else:
-				# return list(map(functions[0][0], sections[:functions[0][1]]))
-				return handle(functions[0][0], sections[:functions[0][1]])
-		else:  # apply each function count times
-			curr_func_i: int = 0
-			curr_func = functions[curr_func_i]
-			rem_times: int = curr_func[1]
+				pattern_type = 0
 
-			section_i: int = 0
+			mem_pattern_type[pattern] = pattern_type
 
-			new_sections = []
+		# is the pattern a tuple/list
+		is_list: bool = pattern_type == 1  # isinstance(pattern, iterable_type)
 
-			while section_i < len(sections) and curr_func_i < len(functions):
-				if curr_func[0] is not None:
-					mapped_value = handle(curr_func[0], sections[section_i])
-					new_sections.append(mapped_value)
+		# option 0.B
+		if is_list and len(pattern) == 0:
+			return text
 
-				if curr_func[1] > 0:
-					rem_times -= 1
+		# does the pattern specify a separator?
+		has_separator: bool = is_list and isinstance(pattern[-1], str)
 
-					if rem_times <= 0:
-						curr_func_i += 1
-						if curr_func_i >= len(functions):
-							break
+		# split the text into sections
+		if has_separator:
+			if pattern[-1] == "":  # split by char
+				sections = list(text)
+			else:
+				sections = text.split(pattern[-1])
+		else:
+			sections = text.split()
 
-						curr_func = functions[curr_func_i]
-						rem_times = curr_func[1]
+		# option 1.B
+		if callable(pattern):
+			return list(map(pattern, sections))
 
-				section_i += 1
+		# option 1.C
+		if pattern_type == 3:  # isinstance(pattern, str):
+			if pattern == "":
+				return list(text)
+			else:
+				return text.split(pattern)
 
-			return new_sections
+		length = len(pattern)
+
+		# option 1.A, 2
+		if is_list and length == 1 + has_separator:
+			if length == 1 and has_separator:  # ([sep])
+				return sections
+			elif pattern[0] is None:  # (None)
+				return sections
+			else:
+				return handle_sub(pattern[0], sections, True)
+
+		# option 3, 4, 5, 6
+		if is_list:
+			# list of tuples containing (function, times)
+			functions = create_function_list(pattern, has_separator)
+			function_length = len(functions)
+
+			if function_length == 0:  # no functions given
+				return sections
+			elif function_length == 1:  # only 1 function given
+				if functions[0][1] == 0:
+					return handle_sub(functions[0][0], sections, True)
+				else:
+					return handle_sub(functions[0][0], sections[:functions[0][1]], True)
+			else:  # apply each function count times
+				curr_func_i: int = 0
+				curr_func = functions[curr_func_i]
+				rem_times: int = curr_func[1]
+
+				section_i: int = 0
+
+				new_sections = []
+				sections_length = len(sections)
+
+				while section_i < sections_length and curr_func_i < function_length:
+					if curr_func[0] is not None:
+						mapped_value = handle_sub(curr_func[0], sections[section_i], False)
+						new_sections.append(mapped_value)
+
+					if curr_func[1] > 0:
+						rem_times -= 1
+
+						if rem_times <= 0:
+							curr_func_i += 1
+							if curr_func_i >= function_length:
+								break
+
+							curr_func = functions[curr_func_i]
+							rem_times = curr_func[1]
+
+					section_i += 1
+
+				return new_sections
+
+	# outer parse function
+	return do_parse(text_, to_tuple(pattern_))
+
+
+def to_tuple(pattern):
+	if isinstance(pattern, (list, tuple)):
+		result = [None] * len(pattern)
+		for i, v in enumerate(pattern):
+			result[i] = to_tuple(v)
+
+		return tuple(result)
+	else:
+		return pattern
+
 
 
 # testing
@@ -183,3 +241,8 @@ if __name__ == '__main__':
 	assert parse("12345", [int, ""]) == [1, 2, 3, 4, 5]
 	assert parse("12345", "") == ["1", "2", "3", "4", "5"]
 	assert parse("1 2 3 4 5", " ") == ["1", "2", "3", "4", "5"]
+
+	assert to_tuple(1) == 1
+	assert to_tuple([1]) == (1,)
+	assert to_tuple([1, "a", True]) == (1, "a", True)
+	assert to_tuple([[int], [int], ","]) == ((int,), (int,), ",")
