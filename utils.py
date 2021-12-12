@@ -4,7 +4,7 @@ def parsefile(file_name: str, pattern):
 
 # pattern syntax
 # 0. A: None or B: ()
-# 1. A: (function) or B: function
+# 1. A: (function) or B: function or C: sep
 # 2. (function, [sep])
 # 3. (function, [count], [sep])
 # 4. (function, [count], function, [count], [sep])
@@ -63,6 +63,13 @@ def parse(text: str, pattern: object = None):
 	# option 1.B
 	if callable(pattern):
 		return list(map(pattern, sections))
+
+	# option 1.C
+	if isinstance(pattern, str):
+		if pattern == "":
+			return list(text)
+		else:
+			return text.split(pattern)
 
 	# option 1.A, 2
 	if isinstance(pattern, (tuple, list)) and len(pattern) == 1 + has_separator:
@@ -174,3 +181,5 @@ if __name__ == '__main__':
 	assert parse("1 2 3 4 5", tuple(" ")) == ["1", "2", "3", "4", "5"]
 	assert parse("1 2 3 4 5", [" "]) == ["1", "2", "3", "4", "5"]
 	assert parse("12345", [int, ""]) == [1, 2, 3, 4, 5]
+	assert parse("12345", "") == ["1", "2", "3", "4", "5"]
+	assert parse("1 2 3 4 5", " ") == ["1", "2", "3", "4", "5"]
