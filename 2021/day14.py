@@ -40,36 +40,71 @@ def part1():
 	return max_count - min_count
 
 mem = {}
+rules_int = {(ord(k[0])-65, ord(k[1])-65):ord(v)-65 for k, v in rules.items()}
+zeroes = [0]*26
 
-def step(pair_count, char_count):
-	for pair, count in pair_count.copy().items():
-		c1 = pair[0]
-		c2 = pair[1]
-		nc = rules[c1+c2]
-		
-		pair_count[c1+c2] -= count
-		
-		pair_count[c1+nc] += count
-		pair_count[nc+c2] += count
-		
-		char_count[nc] += count
-	
+"""
+based on this
+20 is original length
+39 is length after transform
+split into 2 halves to stop memory overload
+each tab represents a iteration
+use memorisation or it will take forever
+20 -> 39 -> 20, 20
+	20 -> 39 -> 20, 20
+		20 -> 39 -> 20, 20
+		20 -> 39 -> 20, 20
+	20 -> 39 -> 20, 20
+		20 -> 39 -> 20, 20
+		20 -> 39 -> 20, 20
+"""
+
+
+def rec(s, depth, max_depth, mid):
+	if depth >= max_depth:
+		c = zeroes.copy()
+		for v in s[:-1]:
+			c[v] += 1
+		return c
+
+	depth += 1
+
+	if (tuple(s), depth) in mem:
+		return mem[(tuple(s), depth)]
+
+	new_s = [0] * (2*mid-1)
+	new_s_i = 0
+	for i in range(1, mid):
+		new_s[new_s_i] = s[i - 1]
+		new_s[new_s_i+1] = rules_int[tuple(s[i-1:i+1])]
+		new_s_i += 2
+
+	new_s[-1] = s[-1]
+
+	count = zeroes.copy()
+
+	c1 = rec(new_s[:mid], depth, max_depth, mid)
+	c2 = rec(new_s[mid-1:], depth, max_depth, mid)
+
+	for i in range(26):
+		count[i] += c1[i] + c2[i]
+
+	mem[(tuple(s), depth)] = count
+
+	return count
+
 
 def part2():
-	pair_count = {v:0 for v in rules.keys()}
-	char_count = {chr(v):0 for v in range(ord("A"), ord("Z")+1)}
-	
-	char_count[start[0]] = 1
-	for i in range(1, len(start)):
-		pair_count[start[i-1:i+1]] += 1
-		
-		char_count[start[i]] += 1
-	
-	for index in range(40):
-		step(pair_count, char_count)
-		
-	min_count = min([v for v in char_count.values() if v > 0])
-	max_count = max(char_count.values())
+	mid = len(start)
+
+	start_int = [ord(c) - 65 for c in start]
+	iterations = 40
+	count = rec(start_int, 0, iterations, mid)
+
+	count[start_int[-1]] += 1
+
+	min_count = min([v for v in count if v > 0])
+	max_count = max(count)
 	return max_count - min_count
 
 
