@@ -20,6 +20,9 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 
 		# writes the boilerplate code the the day file
 		with open(start_path + "day" + day + ".py", "w") as f:
+			# turn formatter off
+			f.write("# @formatter:off\n")
+
 			# import the isfile, and join from os.path
 			f.write("from os.path import isfile, join as path_join\n")
 
@@ -66,6 +69,9 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 				f.write("session_path={}".format(str(["..", ".env"])))
 
 			f.write(")\n")
+
+			# turn formatter on
+			f.write("# @formatter:on\n")
 
 			f.write("\n\n")  # 2 line space between start code and part1
 
