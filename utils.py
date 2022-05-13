@@ -3,8 +3,9 @@ def parsefile(file_name: str, pattern):
 
 
 class Merge:
-	def __init__(self, pattern: object):
+	def __init__(self, pattern: object, separator: str = ""):
 		self.pattern = to_tuple(pattern)
+		self.separator = separator
 
 
 # pattern syntax
@@ -58,7 +59,7 @@ def parse(text_: str, pattern_: object = None):
 			elif t == 2:
 				return list(map(sub_pattern, sub_sections))
 			elif t == 3:
-				return [*do_parse("".join(sub_sections), sub_pattern.pattern)]
+				return [*do_parse(sub_pattern.separator.join(sub_sections), sub_pattern.pattern)]
 			else:
 				return []
 		else:  # handle a single section
@@ -69,7 +70,7 @@ def parse(text_: str, pattern_: object = None):
 			elif t == 2:
 				return sub_pattern(sub_sections)
 			elif t == 3:
-				return do_parse("".join(sub_sections), sub_pattern.pattern)
+				return do_parse(sub_pattern.separator.join(sub_sections), sub_pattern.pattern)
 			else:
 				return ""
 
@@ -265,6 +266,7 @@ if __name__ == '__main__':
 	assert parse("A123", [str, 1, Merge(int), 0, ""]) == ["A", 123]
 	assert parse("A1,2,3", [str, 1, Merge([int, ","]), 0, ""]) == ["A", 1, 2, 3]
 	assert parse("A123", [str, 1, Merge(int), 1, Merge(int), 2, ""]) == ["A", 1, 23]
+	assert parse("A123", [str, 1, Merge([int, ","], ","), 0, ""]) == ["A", 1, 2, 3]
 
 	# mixed
 
