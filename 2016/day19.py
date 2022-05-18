@@ -56,13 +56,15 @@ def part1():
 	return curr_elf.id
 
 
-from skiplist import SkipList
+from sortedcontainers import SortedList
 
 
 class Elf_v2:
 	count = 0
 	elf_arr = []
 	skiplist = None
+	sortedlist = None
+	elfdict = None
 
 	def __init__(self, id):
 		self.id = id
@@ -72,30 +74,29 @@ class Elf_v2:
 
 	def take(self):
 		steal_count = Elf_v2.count // 2
-		curr_index = Elf_v2.skiplist.index(self.id)
+		curr_index = Elf_v2.sortedlist.index(self.id)
 
 		steal_index = (curr_index + steal_count) % Elf_v2.count
 
-		steal_obj = Elf_v2.skiplist[steal_index]
-		steal_id = steal_obj[0]
-		steal_from = steal_obj[1]
+		steal_id = Elf_v2.sortedlist.pop(steal_index)
+		steal_from = Elf_v2.elfdict[steal_id]
 
 		self.presents += steal_from.presents
 		steal_from.prev.next = steal_from.next
 		steal_from.next.prev = steal_from.prev
-		Elf_v2.skiplist.remove(steal_id)
+
 		Elf_v2.count -= 1
 
 
 def part2():
 	Elf_v2.count = elves
 
-	# uses skiplist for O(logN) deletion and O(logN) index
-	# from: https://github.com/geertj/pyskiplist
-	skiplist = SkipList()
+	sortedlist = SortedList()
+	elfdict = {}
 
 	elf1 = Elf_v2(1)
-	skiplist.insert(1, elf1)
+	sortedlist.add(1)
+	elfdict[1] = elf1
 
 	elf_arr = [None] * elves
 	Elf_v2.elf_arr = elf_arr
@@ -105,7 +106,9 @@ def part2():
 	prev_elf = elf1
 	for i in range(1, elves):
 		elf = Elf_v2(i + 1)
-		skiplist.insert(i + 1, elf)
+		# skiplist.insert(i + 1, elf)
+		sortedlist.add(i + 1)
+		elfdict[i + 1] = elf
 		elf.prev = prev_elf
 		prev_elf.next = elf
 		elf_arr[i] = elf
@@ -115,7 +118,8 @@ def part2():
 	prev_elf.next = elf1
 	elf1.prev = prev_elf
 
-	Elf_v2.skiplist = skiplist
+	Elf_v2.sortedlist = sortedlist
+	Elf_v2.elfdict = elfdict
 
 	print("done setup")
 
@@ -131,5 +135,5 @@ def part2():
 	return curr_elf.id
 
 
-p1()
+# p1()
 p2()
