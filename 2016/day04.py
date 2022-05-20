@@ -81,7 +81,7 @@ def decrypt(code):
 def part2():
 	for code in correct_codes:
 		decrypted = decrypt(code)
-		# print(decrypted)
+
 		if "northpole" in decrypted:
 			return code[1]
 

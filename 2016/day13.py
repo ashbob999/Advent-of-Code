@@ -45,11 +45,11 @@ def search(start, end):
 
 		# get adjacent (h + v)
 		adj = []
-		for x in range(-1, 2):
+		for x in range(-1, 2, 2):
 			new_pos = (curr_pos[0] + x, curr_pos[1])
 			if check(new_pos[0], new_pos[1]) == 0:
 				adj.append(new_pos)
-		for y in range(-1, 2):
+		for y in range(-1, 2, 2):
 			new_pos = (curr_pos[0], curr_pos[1] + y)
 			if check(new_pos[0], new_pos[1]) == 0:
 				adj.append(new_pos)
@@ -82,11 +82,11 @@ def bfs(start, limit):
 
 		# get adjacent (h + v)
 		adj = []
-		for x in range(-1, 2):
+		for x in range(-1, 2, 2):
 			new_pos = (curr_pos[0] + x, curr_pos[1])
 			if check(new_pos[0], new_pos[1]) == 0:
 				adj.append(new_pos)
-		for y in range(-1, 2):
+		for y in range(-1, 2, 2):
 			new_pos = (curr_pos[0], curr_pos[1] + y)
 			if check(new_pos[0], new_pos[1]) == 0:
 				adj.append(new_pos)

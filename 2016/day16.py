@@ -44,8 +44,6 @@ def checksum(state):
 		else:
 			check[i // 2] = "0"
 
-	# print(check)
-
 	if len(check) % 2 == 0:
 		return checksum(check)
 

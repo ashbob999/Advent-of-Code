@@ -106,7 +106,6 @@ def part2():
 	prev_elf = elf1
 	for i in range(1, elves):
 		elf = Elf_v2(i + 1)
-		# skiplist.insert(i + 1, elf)
 		sortedlist.add(i + 1)
 		elfdict[i + 1] = elf
 		elf.prev = prev_elf
@@ -121,13 +120,9 @@ def part2():
 	Elf_v2.sortedlist = sortedlist
 	Elf_v2.elfdict = elfdict
 
-	print("done setup")
-
 	curr_elf = elf1
 	while Elf_v2.count > 1:
 		curr_elf.take()
-		# print("elf1", elf1.prev.id, elf1.next.id)
-		if Elf_v2.count % 100000 == 0: print(Elf_v2.count)
 		curr_elf = curr_elf.next
 
 	curr_elf = curr_elf.next
@@ -135,5 +130,5 @@ def part2():
 	return curr_elf.id
 
 
-# p1()
+p1()
 p2()

@@ -39,7 +39,6 @@ def part1():
 		correct = False
 		for i in range(len(p)):
 			if check_abba(p[i]):
-				# print(p[i])
 				if i % 2 == 0:  # even
 					correct = True
 				else:  # odd

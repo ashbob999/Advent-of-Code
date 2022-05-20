@@ -21,16 +21,8 @@ buttons = parsefile(file_name, [[str, ""], "\n"])
 def part1():
 	code = ""
 
-	button_locations = {}
-	button_locations[(-1, -1)] = "1"
-	button_locations[(0, -1)] = "2"
-	button_locations[(1, -1)] = "3"
-	button_locations[(-1, 0)] = "4"
-	button_locations[(0, 0)] = "5"
-	button_locations[(1, 0)] = "6"
-	button_locations[(-1, 1)] = "7"
-	button_locations[(0, 1)] = "8"
-	button_locations[(1, 1)] = "9"
+	button_locations = {(-1, -1): "1", (0, -1): "2", (1, -1): "3", (-1, 0): "4", (0, 0): "5", (1, 0): "6", (-1, 1): "7",
+	                    (0, 1): "8", (1, 1): "9"}
 
 	button_locations_keys = set(button_locations)
 
@@ -60,20 +52,8 @@ def part1():
 def part2():
 	code = ""
 
-	button_locations = {}
-	button_locations[(0, -2)] = "1"
-	button_locations[(-1, -1)] = "2"
-	button_locations[(0, -1)] = "3"
-	button_locations[(1, -1)] = "4"
-	button_locations[(-2, 0)] = "5"
-	button_locations[(-1, 0)] = "6"
-	button_locations[(0, 0)] = "7"
-	button_locations[(1, 0)] = "8"
-	button_locations[(2, 0)] = "9"
-	button_locations[(-1, 1)] = "A"
-	button_locations[(0, 1)] = "B"
-	button_locations[(1, 1)] = "C"
-	button_locations[(0, 2)] = "D"
+	button_locations = {(0, -2): "1", (-1, -1): "2", (0, -1): "3", (1, -1): "4", (-2, 0): "5", (-1, 0): "6",
+	                    (0, 0): "7", (1, 0): "8", (2, 0): "9", (-1, 1): "A", (0, 1): "B", (1, 1): "C", (0, 2): "D"}
 
 	button_locations_keys = set(button_locations)
 
