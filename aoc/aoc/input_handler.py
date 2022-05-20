@@ -62,7 +62,7 @@ def create_input_file(input_file_path: str, day: str, year: str) -> None:
 	os.makedirs(os.path.dirname(input_file_path), exist_ok=True)
 
 	# create the input file
-	with open(input_file_path, "w") as file:
+	with open(input_file_path, "w", newline="\n") as file:
 		file.write(request.content.decode("utf-8"))
 
 
