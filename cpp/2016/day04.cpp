@@ -1,25 +1,5 @@
 #include "../aocHelper.h"
 
-template<int N = 0>
-int mem_to_int_length(const char* buf, int len) // spaces, sign, digits
-{
-	int n = 0, sign = 1;
-
-	while (len && isspace(*buf))
-		--len, ++buf;
-
-	if (len) switch (*buf)
-	{
-		case '-':       sign = -1;        \
-		case '+':       --len, ++buf;
-	}
-
-	while (len-- && isdigit(*buf))
-		n = n * 10 + *buf++ - '0';
-
-	return n * sign;
-}
-
 class Day04 : public BaseDay
 {
 public:
@@ -34,6 +14,25 @@ public:
 			vector<pair<char*, int>> names;
 			int id = 0;
 			pair<char*, int> checksum;
+		};
+
+		auto mem_to_int_length = [](const char* buf, int len) // spaces, sign, digits
+		{
+			int n = 0, sign = 1;
+
+			while (len && isspace(*buf))
+				--len, ++buf;
+
+			if (len) switch (*buf)
+			{
+				case '-':       sign = -1;        \
+				case '+':       --len, ++buf;
+			}
+
+			while (len-- && isdigit(*buf))
+				n = n * 10 + *buf++ - '0';
+
+			return n * sign;
 		};
 
 		auto check = [](room& r)
