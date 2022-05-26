@@ -64,6 +64,17 @@ template<typename T>
 T numericParse(char*& p)
 {
 	bool have = false;
+	T neg = 1;
+	if (*p == '-')
+	{
+		neg = -1;
+		p++;
+	}
+	else if (*p == '+')
+	{
+		neg = 1;
+		p++;
+	}
 	T n = 0;
 	for (; *p != '\0'; p++)
 	{
@@ -78,12 +89,12 @@ T numericParse(char*& p)
 		}
 		else if (have)
 		{
-			return n;
+			return n * neg;
 		}
 	}
 	if (have)
 	{
-		return n;
+		return n * neg;
 	}
 	return 0;
 }
