@@ -77,6 +77,10 @@ public:
 
 				// convert the number to a string, and add it to the buffer
 				int index = key_length + digits - 1;
+				if (num == 0)
+				{
+					buffers[i][index] = '0';
+				}
 				while (num > 0)
 				{
 					buffers[i][index] = char_map[num % 10];

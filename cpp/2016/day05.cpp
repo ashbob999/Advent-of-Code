@@ -1,8 +1,6 @@
 #include "../aocHelper.h"
 #include "md5_simd/md5-simd.h"
 
-constexpr char char_map[10] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
 class Day05 : public BaseDay
 {
 public:
@@ -11,6 +9,8 @@ public:
 	result_type solve() override
 	{
 		long long part1 = 0, part2 = 0;
+
+		constexpr char char_map[10] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
 		auto digit_count = [](int number)
 		{
@@ -67,6 +67,10 @@ public:
 
 				// convert the number to a string, and add it to the buffer
 				int index = id_length + digits - 1;
+				if (num == 0)
+				{
+					buffers[i][index] = '0';
+				}
 				while (num > 0)
 				{
 					buffers[i][index] = char_map[num % 10];
