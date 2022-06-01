@@ -21,6 +21,11 @@
 #include "day18.cpp"
 #include "day19.cpp"
 #include "day20.cpp"
+#include "day21.cpp"
+#include "day22.cpp"
+#include "day23.cpp"
+#include "day24.cpp"
+#include "day25.cpp"
 
 using namespace std;
 
@@ -37,7 +42,7 @@ int main()
 	Day09* d9 = new Day09(); // done
 	Day10* d10 = new Day10(); // done
 	Day11* d11 = new Day11(); // done slow
-	Day12* d12 = new Day12(); // done slow
+	Day12* d12 = new Day12(); // done
 	Day13* d13 = new Day13(); // done
 	Day14* d14 = new Day14(); // done slow
 	Day15* d15 = new Day15(); // done
@@ -46,23 +51,28 @@ int main()
 	Day18* d18 = new Day18(); // done
 	Day19* d19 = new Day19(); // done slow
 	Day20* d20 = new Day20(); // done
+	Day21* d21 = new Day21(); // done
+	Day22* d22 = new Day22(); // done
+	Day23* d23 = new Day23(); // done
+	Day24* d24 = new Day24(); // done
+	Day25* d25 = new Day25(); // done
 
-	auto cd = d19;
+	auto cd = d25;
 
 	vector<BaseDay*> days = {
-		//d1, d2, d3, d4, //d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22, d23, d24, d25
-		cd
+		d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17, d18, d19, d20, d21, d22, d23, d24, d25
+		//cd
 	};
 
-	//runDays(days, { 10 });
+	runDays(days, { 2 });
 
-
+	/*
 	cd->load_input();
 	auto res = cd->solve();
 	cd->unload_input();
 	cout << res.first << " : " << res.second << endl;
 	//cout << cd->stringResult.first << " : " << cd->stringResult.second << endl;
-
+	*/
 
 	for (auto& d : days)
 	{
