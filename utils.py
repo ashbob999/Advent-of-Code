@@ -1,5 +1,11 @@
-def parsefile(file_name: str, pattern):
-	return parse(open(file_name).read().strip(), pattern)
+from enum import IntEnum
+
+
+def parsefile(file_name: str, pattern, strip=True):
+	if strip:
+		return parse(open(file_name).read().strip(), pattern, strip)
+	else:
+		return parse(open(file_name).read(), pattern, strip)
 
 
 class Merge:
@@ -25,7 +31,7 @@ class Merge:
 # tuple = parse each section based on the given pattern
 # Merge(tuple) = merges count elements back into a single element, then applies tuple to the element
 
-def parse(text_: str, pattern_: object = None):
+def parse(text_: str, pattern_: object = None, strip=True):
 	# memorisation variables
 	mem_function_list: dict = {}
 	mem_sub_function: dict = {}
@@ -102,8 +108,9 @@ def parse(text_: str, pattern_: object = None):
 		mem_function_list[pattern] = functions
 		return functions
 
-	def do_parse(text: str, pattern):
-		text = text.strip()
+	def do_parse(text: str, pattern, strip=True):
+		if strip:
+			text = text.strip()
 
 		# option 0.A
 		if pattern is None:
@@ -211,7 +218,7 @@ def parse(text_: str, pattern_: object = None):
 				return new_sections
 
 	# outer parse function
-	return do_parse(text_, to_tuple(pattern_))
+	return do_parse(text_, to_tuple(pattern_), strip)
 
 
 def to_tuple(pattern):
