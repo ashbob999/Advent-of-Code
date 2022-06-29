@@ -63,7 +63,7 @@ def part2():
 
 	dense = [reduce(xor, nums[i:i + 16]) for i in range(0, 256, 16)]
 
-	h = "".join(hex(x)[2:] for x in dense)
+	h = "".join(hex(x)[2:].rjust(2, "0") for x in dense)
 	return h
 
 
