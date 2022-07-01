@@ -58,13 +58,14 @@ def part2():
 	check_every = 100
 
 	while True:
+		parts_length = len(parts)
 		tick(parts)
 		new_parts = []
-		for i in range(len(parts)):
+		for i in range(parts_length):
 			fp = parts[i][0]
 			collided = False
 
-			for j in range(len(parts)):
+			for j in range(parts_length):
 				if i == j:
 					continue
 				if parts[j][0] == fp:

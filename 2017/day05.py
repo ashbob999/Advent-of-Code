@@ -16,6 +16,7 @@ if not isfile(file_name):
 from utils import parsefile
 
 jumps = parsefile(file_name, [int, "\n"])
+jumps_length = len(jumps)
 
 
 def part1():
@@ -29,7 +30,7 @@ def part1():
 		jps[i] += 1
 		i += offset
 		c += 1
-		if i < 0 or i >= len(jps):
+		if i < 0 or i >= jumps_length:
 			return c
 
 
@@ -47,7 +48,7 @@ def part2():
 			jps[i] += 1
 		i += offset
 		c += 1
-		if i < 0 or i >= len(jps):
+		if i < 0 or i >= jumps_length:
 			return c
 
 

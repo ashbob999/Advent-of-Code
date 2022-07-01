@@ -23,7 +23,8 @@ start_pattern = [[".", "#", "."], [".", ".", "#"], ["#", "#", "#"]]
 
 def flip(patt, dir):
 	if dir == 0:  # v
-		return [patt[i] for i in range(len(patt) - 1, -1, -1)]
+		patt_len = len(patt)
+		return [patt[i] for i in range(patt_len - 1, -1, -1)]
 	elif dir == 1:  # h
 		return [t[::-1] for t in patt]
 
@@ -65,27 +66,28 @@ for r in raw_rules:
 
 
 def iterate(grid):
+	grid_length = len(grid)
 	new_grid = []
-	if len(grid) % 2 == 0:  # split into 2x2
-		for y in range(len(grid) // 2):
-			for x in range(len(grid) // 2):
+	if grid_length % 2 == 0:  # split into 2x2
+		new_grid.extend([[] for i in range(grid_length // 2 * 3)])
+		for y in range(grid_length // 2):
+			for x in range(grid_length // 2):
+				# replaces 2x2 grid with 3x3 grid
 				mini_grid = [r[x * 2:x * 2 + 2] for r in grid[y * 2:y * 2 + 2]]
 				out_grid = rules[to_tuple(mini_grid)]
-				for y2 in range(len(out_grid)):
-					y_pos = y * len(out_grid) + y2
-					if len(new_grid) <= y_pos:
-						new_grid.append([])
+				for y2 in range(3):
+					y_pos = y * 3 + y2
 					new_grid[y_pos].extend(out_grid[y2])
 
 	else:  # split into 3x3
-		for y in range(len(grid) // 3):
-			for x in range(len(grid) // 3):
+		new_grid.extend([[] for i in range(grid_length // 3 * 4)])
+		for y in range(grid_length // 3):
+			for x in range(grid_length // 3):
+				# replaces 3x3 grid with 4x4 grid
 				mini_grid = [r[x * 3:x * 3 + 3] for r in grid[y * 3:y * 3 + 3]]
 				out_grid = rules[to_tuple(mini_grid)]
-				for y2 in range(len(out_grid)):
-					y_pos = y * len(out_grid) + y2
-					if len(new_grid) <= y_pos:
-						new_grid.append([])
+				for y2 in range(4):
+					y_pos = y * 4 + y2
 					new_grid[y_pos].extend(out_grid[y2])
 
 	return new_grid
