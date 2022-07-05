@@ -61,7 +61,11 @@ def part2():
 		index = res[1]
 		skip_size = res[2]
 
+		# print(index, skip_size, nums)
+
 	dense = [reduce(xor, nums[i:i + 16]) for i in range(0, 256, 16)]
+
+	print(dense)
 
 	h = "".join(hex(x)[2:].rjust(2, "0") for x in dense)
 	return h
