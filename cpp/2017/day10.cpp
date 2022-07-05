@@ -105,7 +105,6 @@ public:
 
 		auto int_to_hex = [](int v)
 		{
-			int i = 0;
 			if (v < 10)
 			{
 				return (char) ('0' + v);
@@ -116,23 +115,25 @@ public:
 			}
 		};
 
-		string hash_str;
+		array<char, 32> hash_str;
 
-		for (auto& d : dense)
+		for (int i = 0; i < 16; i++)
 		{
+			uint8_t d = dense[i];
+
 			if ((d & 0xf0) != 0)
 			{
-				hash_str += int_to_hex(d >> 4);
+				hash_str[i * 2] = int_to_hex(d >> 4);
 			}
 			else
 			{
-				hash_str += '0';
+				hash_str[i * 2] = '0';
 			}
 
-			hash_str += int_to_hex(d & 0xf);
+			hash_str[i * 2 + 1] = int_to_hex(d & 0xf);
 		}
 
-		memcpy(stringResult.second, hash_str.c_str(), hash_str.size());
+		memcpy(stringResult.second, hash_str.data(), hash_str.size());
 
 		return { part1, part2 };
 	}
