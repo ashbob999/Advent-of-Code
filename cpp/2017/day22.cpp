@@ -9,8 +9,7 @@ public:
 	{
 		long long part1 = 0, part2 = 0;
 
-
-		set<pair<int, int>> points;
+		unordered_set<uint32_t> points;
 
 		int width;
 		int height;
@@ -31,7 +30,7 @@ public:
 			{
 				if (*input == '#')
 				{
-					points.insert({ x, y });
+					points.insert((uint32_t) (x + 30'000) << 16 | (uint32_t) (y + 30'000));
 				}
 				x++;
 			}
@@ -41,13 +40,14 @@ public:
 		height = y;
 
 		// part 1
-		set<pair<int, int>> p1_inf_points = points;
-		pair<int, int> p1_pos = { width / 2, height / 2 };
+		unordered_set<uint32_t> p1_inf_points = points;
+		pair<uint32_t, uint32_t> p1_pos = { (width / 2) + 30'000, (height / 2) + 30'000 };
 		int p1_dir = 0; // up
 
 		for (int i = 0; i < 10'000; i++)
 		{
-			if (p1_inf_points.contains(p1_pos)) // turn right
+			uint32_t pos = p1_pos.first << 16 | p1_pos.second;
+			if (p1_inf_points.contains(pos)) // turn right
 			{
 				p1_dir++;
 				if (p1_dir == 4)
@@ -56,7 +56,7 @@ public:
 				}
 
 				// clean
-				p1_inf_points.erase(p1_pos);
+				p1_inf_points.erase(pos);
 			}
 			else // turn left
 			{
@@ -67,7 +67,7 @@ public:
 				}
 
 				// infect
-				p1_inf_points.insert(p1_pos);
+				p1_inf_points.insert(pos);
 				part1++;
 			}
 
@@ -98,22 +98,23 @@ public:
 		}
 
 		// part 2
-		map<pair<int, int>, int> p2_inf_points;
+		unordered_map<uint32_t, int> p2_inf_points;
 		for (auto& p : points)
 		{
 			p2_inf_points.insert({ p, 2 });
 		}
-		pair<int, int> p2_pos = { width / 2, height / 2 };
+		pair<uint32_t, uint32_t> p2_pos = { (width / 2) + 30'000, (height / 2) + 30'000 };
 		int p2_dir = 0; // up
 
 		for (int i = 0; i < 10'000'000; i++)
 		{
-			if (!p2_inf_points.contains(p2_pos))
+			uint32_t pos = p2_pos.first << 16 | p2_pos.second;
+			if (!p2_inf_points.contains(pos))
 			{
-				p2_inf_points.insert({ p2_pos, 0 }); // clean
+				p2_inf_points.insert({ pos, 0 }); // clean
 			}
 
-			int state = p2_inf_points[p2_pos];
+			int state = p2_inf_points[pos];
 
 			switch (state)
 			{
@@ -126,14 +127,14 @@ public:
 					}
 
 					// clean -> weakened
-					p2_inf_points[p2_pos] = 1;
+					p2_inf_points[pos] = 1;
 
 					break;
 				}
 				case 1: // weakened, carry on
 				{
 					// weakened -> infected
-					p2_inf_points[p2_pos] = 2;
+					p2_inf_points[pos] = 2;
 					part2++;
 
 					break;
@@ -147,7 +148,7 @@ public:
 					}
 
 					// infected -> flagged
-					p2_inf_points[p2_pos] = 3;
+					p2_inf_points[pos] = 3;
 
 					break;
 				}
@@ -160,7 +161,7 @@ public:
 					}
 
 					// flagged -> clean
-					p2_inf_points[p2_pos] = 0;
+					p2_inf_points[pos] = 0;
 
 					break;
 				}
