@@ -70,7 +70,7 @@ def a_star(start, end, grid):
 					f_score[(nx, ny)] = tg_score + hf((nx, ny))
 					
 					if (nx, ny) not in in_heap:
-						heappush(heap, (f_score, (nx, ny)))
+						heappush(heap, (f_score[(nx, ny)], (nx, ny)))
 						in_heap.add((nx, ny))
 
 	return None

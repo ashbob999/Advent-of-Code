@@ -4,8 +4,8 @@ BaseDay::BaseDay(string _day) : time(0), dayStr(_day)
 {
 	filename = FILEPATH + "day" + dayStr + ".txt";
 
-	stringResult.first = new char[100]{};
-	stringResult.second = new char[100]{};
+	stringResult.first = new char[512]{};
+	stringResult.second = new char[512]{};
 }
 
 void BaseDay::load_input()
