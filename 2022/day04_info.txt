@@ -1,0 +1,44 @@
+day 04
+
+normal
+	calls: 25319 (18312 primitive)
+		strip: 3002
+		split: 3001
+		len: 6009
+		isinstance: 3020
+		callable: 3002
+	time: 166
+
+normal (utils2.py)
+	calls: 
+		len: 10
+		callable: 1
+		isinstance: 22
+	time: 150
+
+
+basic
+	calls: 4535
+		split: 3001
+		genexpr (p1): 585
+		genexpr (p2): 934
+	time: 30
+
+
+
+
+
+utils
+	calls: 893 (783 primitive)
+		strip: 40
+		split: 33
+		len: 136
+		isinstance: 285
+		callable: 83
+		append: 24
+		max: 22
+	time: 6
+
+
+
+
