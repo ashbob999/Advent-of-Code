@@ -52,16 +52,6 @@ public:
 		buffers[6] = new char[128];
 		buffers[7] = new char[128];
 
-		char* md5_buffers[8];
-		md5_buffers[0] = new char[32];
-		md5_buffers[1] = new char[32];
-		md5_buffers[2] = new char[32];
-		md5_buffers[3] = new char[32];
-		md5_buffers[4] = new char[32];
-		md5_buffers[5] = new char[32];
-		md5_buffers[6] = new char[32];
-		md5_buffers[7] = new char[32];
-
 		md5_simd::MD5_SIMD md5;
 
 		auto get_hash = [&](unordered_map<int, string>& mem, unordered_set<int>& base_nums, int number, int times)
@@ -105,31 +95,29 @@ public:
 
 				for (int buffer_index = 0; buffer_index < 8; buffer_index++)
 				{
-					md5.hexdigest(md5_buffers[buffer_index], buffer_index);
+					md5.hexdigest(buffers[buffer_index], buffer_index);
+				}
+
+				for (int i = 0; i < 8; i++)
+				{
+					lengths[i] = 32;
 				}
 
 				// do it the rest amount of times
 				for (int t = 0; t < times - 1; t++)
 				{
-					// fill buffers
-					for (int i = 0; i < 8; i++)
-					{
-						memcpy(buffers[i], md5_buffers[i], 32);
-						lengths[i] = 32;
-					}
-
 					md5.calculate<8, false>(buffers, lengths); // calculate the hashes
 
 					for (int buffer_index = 0; buffer_index < 8; buffer_index++)
 					{
-						md5.hexdigest(md5_buffers[buffer_index], buffer_index);
+						md5.hexdigest(buffers[buffer_index], buffer_index);
 					}
 				}
 
 				// store the final hashes
 				for (int buffer_index = 0; buffer_index < 8; buffer_index++)
 				{
-					hashes[buffer_index] = string{ md5_buffers[buffer_index], md5_buffers[buffer_index] + 32 };
+					hashes[buffer_index] = string{ buffers[buffer_index], buffers[buffer_index] + 32 };
 					mem[number + buffer_index] = hashes[buffer_index];
 				}
 				base_nums.insert(number);
@@ -263,15 +251,6 @@ public:
 		delete[] buffers[5];
 		delete[] buffers[6];
 		delete[] buffers[7];
-
-		delete[] md5_buffers[0];
-		delete[] md5_buffers[1];
-		delete[] md5_buffers[2];
-		delete[] md5_buffers[3];
-		delete[] md5_buffers[4];
-		delete[] md5_buffers[5];
-		delete[] md5_buffers[6];
-		delete[] md5_buffers[7];
 
 		return { part1, part2 };
 	}
