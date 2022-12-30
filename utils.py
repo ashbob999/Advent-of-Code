@@ -1,11 +1,8 @@
 from enum import IntEnum
 
 
-def parsefile(file_name: str, pattern, strip=True):
-	if strip:
-		return parse(open(file_name).read().strip(), pattern, strip)
-	else:
-		return parse(open(file_name).read(), pattern, strip)
+def parsefile(file_name: str, pattern: object = None, strip: bool = False):
+	return parse(open(file_name).read().rstrip("\n"), pattern, strip)
 
 
 class Merge:
@@ -31,11 +28,13 @@ class Merge:
 # tuple = parse each section based on the given pattern
 # Merge(tuple) = merges count elements back into a single element, then applies tuple to the element
 
-def parse(text_: str, pattern_: object = None, strip=True):
+def parse(text_: str, pattern_: object = None, strip: bool = False):
 	# memorisation variables
 	mem_function_list: dict = {}
 	mem_sub_function: dict = {}
 	mem_pattern_type: dict = {}  # 0=None 1=list/tuple, 2=callable, 2=str
+	mem_pattern_len: dict = {}
+	mem_pattern_has_separator = {}
 
 	iterable_type = tuple
 
@@ -47,10 +46,12 @@ def parse(text_: str, pattern_: object = None, strip=True):
 		else:
 			if isinstance(sub_pattern, iterable_type):
 				t = 1
-			elif isinstance(sub_pattern, Merge):
+			elif isinstance(sub_pattern, str):
 				t = 3
 			elif callable(sub_pattern):
 				t = 2
+			elif isinstance(sub_pattern, Merge):
+				t = 4
 			else:
 				t = 0
 			# t = 1 if isinstance(sub_pattern, iterable_type) else 3 if isinstance(sub_pattern, Merge) else 2 if callable(
@@ -64,7 +65,7 @@ def parse(text_: str, pattern_: object = None, strip=True):
 				return [do_parse(section, sub_pattern) for section in sub_sections]
 			elif t == 2:
 				return list(map(sub_pattern, sub_sections))
-			elif t == 3:
+			elif t == 4:
 				return [*do_parse(sub_pattern.separator.join(sub_sections), sub_pattern.pattern)]
 			else:
 				return []
@@ -75,7 +76,7 @@ def parse(text_: str, pattern_: object = None, strip=True):
 				return do_parse(sub_sections, sub_pattern)
 			elif t == 2:
 				return sub_pattern(sub_sections)
-			elif t == 3:
+			elif t == 4:
 				return do_parse(sub_pattern.separator.join(sub_sections), sub_pattern.pattern)
 			else:
 				return ""
@@ -105,10 +106,11 @@ def parse(text_: str, pattern_: object = None, strip=True):
 
 			functions.append((func, count))
 
-		mem_function_list[pattern] = functions
-		return functions
+		data = (functions, len(functions))
+		mem_function_list[pattern] = data
+		return data
 
-	def do_parse(text: str, pattern, strip=True):
+	def do_parse(text: str, pattern):
 		if strip:
 			text = text.strip()
 
@@ -121,8 +123,12 @@ def parse(text_: str, pattern_: object = None, strip=True):
 		else:
 			if isinstance(pattern, iterable_type):
 				pattern_type = 1
+			elif callable(pattern):
+				pattern_type = 2
 			elif isinstance(pattern, str):
 				pattern_type = 3
+			elif isinstance(pattern, Merge):
+				pattern_type = 4
 			else:
 				pattern_type = 0
 
@@ -131,12 +137,25 @@ def parse(text_: str, pattern_: object = None, strip=True):
 		# is the pattern a tuple/list
 		is_list: bool = pattern_type == 1  # isinstance(pattern, iterable_type)
 
+		if is_list:
+			if pattern in mem_pattern_len:
+				length = mem_pattern_len[pattern]
+			else:
+				length = len(pattern)
+				mem_pattern_len[pattern] = length
+
 		# option 0.B
-		if is_list and len(pattern) == 0:
+		if is_list and length == 0:
 			return text
 
 		# does the pattern specify a separator?
-		has_separator: bool = is_list and isinstance(pattern[-1], str)
+		if pattern in mem_pattern_has_separator:
+			has_separator: bool = mem_pattern_has_separator[pattern]
+		else:
+			has_separator: bool = is_list and isinstance(pattern[-1], str)
+			mem_pattern_has_separator[pattern] = has_separator
+
+		# has_separator: bool = is_list and isinstance(pattern[-1], str)
 
 		# split the text into sections
 		if has_separator:
@@ -148,7 +167,7 @@ def parse(text_: str, pattern_: object = None, strip=True):
 			sections = text.split()
 
 		# option 1.B
-		if callable(pattern):
+		if pattern_type == 2:  # callable(pattern)
 			return list(map(pattern, sections))
 
 		# option 1.C
@@ -157,8 +176,6 @@ def parse(text_: str, pattern_: object = None, strip=True):
 				return list(text)
 			else:
 				return text.split(pattern)
-
-		length = len(pattern)
 
 		# option 1.A, 2
 		if is_list and length == 1 + has_separator:
@@ -172,8 +189,7 @@ def parse(text_: str, pattern_: object = None, strip=True):
 		# option 3, 4, 5, 6, 7
 		if is_list:
 			# list of tuples containing (function, times)
-			functions = create_function_list(pattern, has_separator)
-			function_length = len(functions)
+			functions, function_length = create_function_list(pattern, has_separator)
 
 			if function_length == 0:  # no functions given
 				return sections
@@ -218,7 +234,7 @@ def parse(text_: str, pattern_: object = None, strip=True):
 				return new_sections
 
 	# outer parse function
-	return do_parse(text_, to_tuple(pattern_), strip)
+	return do_parse(text_, to_tuple(pattern_))
 
 
 def to_tuple(pattern):
