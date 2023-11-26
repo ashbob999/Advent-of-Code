@@ -3,6 +3,8 @@ import os
 import sys
 from datetime import datetime
 
+sys.path.append(".")
+
 from aoc.input_handler import create_input_file, load_session
 
 
