@@ -75,7 +75,11 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 			# turn formatter on
 			f.write("# @formatter:on\n")
 
-			f.write("\n\n")  # 2 line space between start code and part1
+			f.write("\n")
+
+			f.write("from utils import *\n")
+
+			f.write("\n")
 
 			# part 1 and part 2 code
 			code = ("def part1():"
