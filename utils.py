@@ -29,6 +29,8 @@ class Merge:
 # Merge(tuple) = merges count elements back into a single element, then applies tuple to the element
 
 def parse(text_: str, pattern_: object = None, strip: bool = False):
+	assert isinstance(text_, str), "input must be a str"
+	
 	# memorisation variables
 	mem_function_list: dict = {}
 	mem_sub_function: dict = {}
