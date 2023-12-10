@@ -9,20 +9,30 @@ public:
 	{
 		long long part1 = 0, part2 = 0;
 
-		std::vector<std::pair<int, std::vector<std::array<char, 3>>>> games;
+		std::array<std::array<std::array<char, 3>, 16>, 100> games{};
+
+		int games_index = 0;
 
 		while (*input != '\0')
 		{
-			std::pair<char, std::vector<std::array<char, 3>>> game;
+			auto&& game = games[games_index];
 
 			input += 5; // skip 'Game '
 
-			char id = numericParse<char>(input);
-			game.first = id;
+			input++; // skip first digit
+
+			if (*input != ':')
+			{
+				input++; // skip second digit
+			}
+			if (*input != ':')
+			{
+				input++; // skip third digit
+			}
 
 			input += 2; // skip ': '
 
-			game.second.push_back({});
+			int hand_index = 0;
 
 			while (*input != '\n')
 			{
@@ -34,19 +44,19 @@ public:
 				{
 					case 'r':
 					{
-						game.second.back()[0] = count;
+						game[hand_index][0] = count;
 						input += 3; // skip 'red'
 						break;
 					}
 					case 'g':
 					{
-						game.second.back()[1] = count;
+						game[hand_index][1] = count;
 						input += 5; // skip 'green'
 						break;
 					}
 					case 'b':
 					{
-						game.second.back()[2] = count;
+						game[hand_index][2] = count;
 						input += 4; // skip 'blue'
 						break;
 					}
@@ -61,29 +71,31 @@ public:
 					}
 					case ';':
 					{
-						game.second.push_back({});
+						hand_index++;
 						input += 2; // skip '; '
 						break;
 					}
 				}
 			}
 
-			games.push_back(std::move(game));
+			games_index++;
 
 			input++; // skip '\n'
 		}
 
-		// part 1
+		//    part 1
 
 		constexpr char RedLimit = 12;
 		constexpr char GreenLimit = 13;
 		constexpr char BlueLimit = 14;
 
-		for (auto&& game : games)
+		for (int i = 0; i < games.size(); i++)
 		{
+			auto&& game = games[i];
+
 			bool valid = true;
 
-			for (auto&& hand : game.second)
+			for (auto&& hand : game)
 			{
 				if (hand[0] > RedLimit)
 				{
@@ -106,7 +118,7 @@ public:
 
 			if (valid)
 			{
-				part1 += game.first;
+				part1 += i + 1;
 			}
 		}
 
@@ -116,22 +128,11 @@ public:
 		{
 			std::array<char, 3> min_vals{0, 0, 0};
 
-			for (auto&& hand : game.second)
+			for (auto&& hand : game)
 			{
-				if (hand[0] != 0)
-				{
-					min_vals[0] = std::max(min_vals[0], hand[0]);
-				}
-
-				if (hand[1] != 0)
-				{
-					min_vals[1] = std::max(min_vals[1], hand[1]);
-				}
-
-				if (hand[2] != 0)
-				{
-					min_vals[2] = std::max(min_vals[2], hand[2]);
-				}
+				min_vals[0] = std::max(min_vals[0], hand[0]);
+				min_vals[1] = std::max(min_vals[1], hand[1]);
+				min_vals[2] = std::max(min_vals[2], hand[2]);
 			}
 
 			int value = 1;
