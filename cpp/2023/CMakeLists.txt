@@ -11,4 +11,4 @@ file(GLOB INPUT_FILES
 file(COPY ${INPUT_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/input)
 
 include_directories(${SOURCE_DIR})
-add_executable(aoc_2021_cpp "main.cpp" "../aocHelper.cpp" "../aocHelper.h" "day01.cpp")
+add_executable(aoc_2023_cpp "main.cpp" "../aocHelper.cpp" "../aocHelper.h" "day01.cpp")

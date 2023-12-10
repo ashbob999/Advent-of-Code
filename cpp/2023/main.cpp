@@ -17,7 +17,7 @@ int main()
 							 // d20, d21, d22, d23, d24, d25
 							 cd};
 
-	runDays(days, {1000});
+	runDays(days, {10000});
 
 	cd->load_input();
 	auto res = cd->solve();
