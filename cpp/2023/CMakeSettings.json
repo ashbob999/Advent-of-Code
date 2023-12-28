@@ -13,7 +13,12 @@
 			"variables": [
 				{
 					"name": "CMAKE_CXX_FLAGS_DEBUG",
-					"value": "/Zi /Ob0 /Od /RTC1 /Wall /arch:AVX2 /Qpar /favor:INTEL64",
+					"value": "/Zi /Ob0 /Od /RTC1 /Wall /arch:AVX2 /Qpar /favor:INTEL64 /MTd",
+					"type": "STRING"
+				},
+				{
+					"name": "VCPKG_TARGET_TRIPLET",
+					"value": "x64-windows-static",
 					"type": "STRING"
 				}
 			],
@@ -25,14 +30,18 @@
 			"configurationType": "Release",
 			"buildRoot": "${projectDir}\\msvc\\build\\${name}",
 			"installRoot": "${projectDir}\\msvc\\${name}",
-			"cmakeCommandArgs": "",
 			"buildCommandArgs": "",
 			"ctestCommandArgs": "",
 			"inheritEnvironments": [ "msvc_x64_x64" ],
 			"variables": [
 				{
 					"name": "CMAKE_CXX_FLAGS_RELEASE",
-					"value": "/O2 /Ob2 /GL /Ob3 /Wall /arch:AVX2 /Qpar /favor:INTEL64",
+					"value": "/O2 /GL /Ob3 /Wall /arch:AVX2 /Qpar /favor:INTEL64 /MT",
+					"type": "STRING"
+				},
+				{
+					"name": "VCPKG_TARGET_TRIPLET",
+					"value": "x64-windows-static",
 					"type": "STRING"
 				}
 			],
