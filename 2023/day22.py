@@ -83,7 +83,9 @@ from bisect import insort
 fallen_blocks = []
 for block in blocks:
 	b = fall(block, fallen_blocks)
-	insort(fallen_blocks, b, key=lambda x: x[2][0])
+	# insort(fallen_blocks, b, key=lambda x: x[2][0])
+	fallen_blocks.append(b)
+	fallen_blocks = sorted(fallen_blocks, key=lambda x: x[2][0])
 
 
 def collide2(z, xr, yr, blocks):
