@@ -20,7 +20,7 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 	if overwrite or not os.path.isfile(start_path + "day" + day + ".py"):
 		print("Day file does not exist (dayXX.py will be created)")
 
-		# writes the boilerplate code the the day file
+		# writes the boilerplate code for the day file
 		with open(start_path + "day" + day + ".py", "w") as f:
 			# turn formatter off
 			f.write("# @formatter:off\n")
@@ -100,11 +100,26 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 		print("Day file exists, use --overwrite to overwrite the file")
 
 
+def min_value_type(min_value: int):
+	def min_value_checker(arg):
+		try:
+			i = int(arg)
+		except ValueError:
+			raise argparse.ArgumentTypeError("invalid int value: '%s'" % str(arg))
+
+		if i < min_value:
+			raise argparse.ArgumentTypeError("must not be less than: %d" % min_value)
+
+		return i
+
+	return min_value_checker
+
+
 def main():
 	parser = argparse.ArgumentParser()
 
 	# add year argument
-	parser.add_argument("-y", "--year", action="store", default=datetime.today().year, type=int,
+	parser.add_argument("-y", "--year", action="store", default=datetime.today().year, type=min_value_type(0),
 	                    help="The year of the files to generate. (must be positive)")
 
 	# add day argument
@@ -129,6 +144,13 @@ def main():
 	parser.add_argument("-a", "--all", action="store_true",
 	                    help="Sets --session, -- input, --overwrite to True")
 
+	# adds get all input argument
+	parser.add_argument("--get-all-inputs", action="store_true",
+	                    help="Gets all of the input files for the specified year")
+
+	# supress output
+	parser.add_argument("-q", "--quiet", action="store_true", help="Suppresses all outputted text")
+
 	args = parser.parse_args()
 
 	if args.all:
@@ -136,26 +158,40 @@ def main():
 		args.session = True
 		args.input = True
 
-	if args.year < 0:  # checks if the year is negative
-		print("generate.py: error: argument -y/--year: invalid year value: '" + str(
-			args.year) + "' (Year must be positive)")
-		sys.exit()
-
-	day = str(args.day).rjust(2, "0")
 	year = str(args.year)
-
-	# creates the specified day file
-	create_day(year, day, overwrite=args.overwrite, gen_session=args.session)
-
-	# create the input path
-	input_path = os.path.join(year, "input", "day" + day + ".txt")
 
 	# load the session, so we can get the input
 	load_session(session_path=[".env"])
 
+	if args.get_all_inputs:
+		# gets all the input files for the given year
+		success: bool = True
+		for day_num in range(1, 25 + 1):
+			day_str = str(day_num).rjust(2, "0")
+
+			# create the input path
+			input_path = os.path.join(year, "input", "day" + day_str + ".txt")
+
+			if not create_input_file(input_path, str(day_num), year, overwrite=args.overwrite, quiet=args.quiet):
+				if not args.quiet:
+					print("Could not get input file for %s day %s" % (year, day_str))
+				success = False
+
+		sys.exit(0 if success else 1)
+
+	day = str(args.day).rjust(2, "0")
+
+	# creates the specified day file
+	create_day(year, day, overwrite=args.overwrite, gen_session=args.session)
+
 	if args.input:
+		# create the input path
+		input_path = os.path.join(year, "input", "day" + day + ".txt")
+
 		# create the input file
-		create_input_file(input_path, day.lstrip("0"), year)
+		if not create_input_file(input_path, day.lstrip("0"), year):
+			print("Could not get input file for %s day %s" % (year, day))
+			sys.exit(1)
 
 
 if __name__ == "__main__":

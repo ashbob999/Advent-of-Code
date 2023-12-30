@@ -611,3 +611,4 @@ FodyWeavers.xsd
 # build directories
 msvc/
 wsl/
+input/
