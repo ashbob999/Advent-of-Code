@@ -106,7 +106,18 @@ def part1():
 	
 	return res[0] * res[1]
 
-from math import prod, lcm
+from math import prod
+
+try:
+	from math import lcm
+except Exception as e:
+	from math import gcd  # Python versions 3.5 and above
+	# from fractions import gcd # Python versions below 3.5
+	from functools import reduce  # Python version 3.x
+
+	def lcm(*denominators):
+		return reduce(lambda a, b: a * b // gcd(a, b), denominators)
+
 
 def part2():
 	# input that modifies rx

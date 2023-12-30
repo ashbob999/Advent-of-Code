@@ -33,12 +33,18 @@ def load_session(session_cookie: str = None, session_path: list = None) -> None:
 			pass
 
 
-def create_input_file(input_file_path: str, day: str, year: str) -> None:
+def create_input_file(input_file_path: str, day: str, year: str, overwrite: bool = False, quiet: bool = False) -> bool:
+	if os.path.isfile(input_file_path) and not overwrite:
+		if not quiet:
+			print("Input file already exists: " + input_file_path)
+		return True
+
 	# url to the input text
 	url = "https://adventofcode.com/" + year + "/day/" + day + "/input"
 
-	print("url:", url)
-	print("Input File Location:", input_file_path)
+	if not quiet:
+		print("url:", url)
+		print("Input File Location:", input_file_path)
 
 	headers = {}
 
@@ -53,10 +59,12 @@ def create_input_file(input_file_path: str, day: str, year: str) -> None:
 	request = requests.get(url, headers=headers, cookies=cookies)
 
 	if request.status_code != 200:  # if it can't get the input from the url
-		print("Error", request.status_code)
+		if not quiet:
+			print("Error", request.status_code)
 		if request.status_code == 404:
-			print("Page Not Found, check Session Cookie and Year/Day")
-		sys.exit()
+			if not quiet:
+				print("Page Not Found, check Session Cookie and Year/Day")
+		return False
 
 	# creates the input folder
 	os.makedirs(os.path.dirname(input_file_path), exist_ok=True)
@@ -64,6 +72,8 @@ def create_input_file(input_file_path: str, day: str, year: str) -> None:
 	# create the input file
 	with open(input_file_path, "w", newline="\n") as file:
 		file.write(request.content.decode("utf-8"))
+
+	return True
 
 
 def get_input_file(re_download: bool = False, session_path: list = None):
