@@ -8,7 +8,7 @@ sys.path.append(".")
 from aoc.input_handler import create_input_file, load_session
 
 
-def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
+def create_day(year: str, day: str, overwrite: bool):
 	# create the path to the year folder
 	start_path = os.path.join(year, "")
 	# print(start_path)
@@ -21,81 +21,12 @@ def create_day(year: str, day: str, overwrite: bool, gen_session: bool):
 		print("Day file does not exist (dayXX.py will be created)")
 
 		# writes the boilerplate code for the day file
+		day_template = open("./day_template_python.py").read()
+		day_template = day_template.replace("%DAY%", day)
+
 		with open(start_path + "day" + day + ".py", "w") as f:
-			# turn formatter off
-			f.write("# @formatter:off\n")
+			f.write(day_template)
 
-			# import the isfile, and join from os.path
-			f.write("from os.path import isfile, join as path_join\n")
-
-			# import the path class from sys
-			f.write("from sys import path as sys_path\n")
-
-			# add parent directory to path
-			f.write("sys_path.insert(1, path_join(sys_path[0], '..'))\n")
-
-			# create the day input file name
-			f.write("file_name = path_join('input', 'day%s.txt')\n" % day)
-
-			# function to get the input as a list
-			f.write(
-				"def to_list(mf: object = int, sep='\\n'): "
-				"return [mf(x) for x in open(file_name).read().split(sep) if x]")
-			f.write("\n")
-
-			# function to get the input as a generator
-			f.write(
-				"def to_gen(mf: object = int, sep='\\n'): "
-				"return (mf(x) for x in open(file_name).read().split(sep) if x)")
-			f.write("\n")
-
-			# function to print and return part1 result
-			f.write("def p1(*args): ans = part1(*args); print(ans); return ans")
-			f.write("\n")
-
-			# function to print and return part2 result
-			f.write("def p2(*args): ans = part2(*args); print(ans); return ans")
-			f.write("\n\n")
-
-			# stick imports and file creation inside an if statement
-			# to be called if the input file does not exist
-			f.write("if not isfile(file_name):\n")
-
-			# add slow import
-			f.write("\tfrom aoc import get_input_file\n")
-
-			# create the input file
-			f.write("\tget_input_file(")
-
-			if gen_session:
-				f.write("session_path={}".format(str(["..", ".env"])))
-
-			f.write(")\n")
-
-			# turn formatter on
-			f.write("# @formatter:on\n")
-
-			f.write("\n")
-
-			f.write("from utils import *\n")
-
-			f.write("\n")
-
-			# part 1 and part 2 code
-			code = ("def part1():"
-			        "\n"
-			        "\tpass"
-			        "\n\n\n"
-			        "def part2():"
-			        "\n"
-			        "\tpass"
-			        "\n\n\n"
-			        "p1()"
-			        "\n"
-			        "p2()"
-			        "\n")
-
-			f.write(code)
 	else:
 		print("Day file exists, use --overwrite to overwrite the file")
 
@@ -129,8 +60,8 @@ def main():
 	                    help="The Day of the file to generate. (must be in range 1-25)")
 
 	# adds session argument
-	parser.add_argument("-s", "--session", action="store_true",
-	                    help="Whether or not to add session loading to the pre-generated code.")
+	# parser.add_argument("-s", "--session", action="store_true",
+	#                     help="Whether or not to add session loading to the pre-generated code.")
 
 	# adds input argument
 	parser.add_argument("-i", "--input", action="store_true",
@@ -155,7 +86,7 @@ def main():
 
 	if args.all:
 		args.overwrite = True
-		args.session = True
+		# args.session = True
 		args.input = True
 
 	year = str(args.year)
@@ -182,7 +113,8 @@ def main():
 	day = str(args.day).rjust(2, "0")
 
 	# creates the specified day file
-	create_day(year, day, overwrite=args.overwrite, gen_session=args.session)
+	# create_day(year, day, overwrite=args.overwrite, gen_session=args.session)
+	create_day(year, day, overwrite=args.overwrite)
 
 	if args.input:
 		# create the input path
