@@ -8,7 +8,7 @@ sys.path.append(".")
 from aoc.input_handler import create_input_file, load_session
 
 
-def create_day(year: str, day: str, overwrite: bool):
+def create_day(year: str, day: str, overwrite: bool, quiet: bool = False):
 	# create the path to the year folder
 	start_path = os.path.join(year, "")
 	# print(start_path)
@@ -18,7 +18,8 @@ def create_day(year: str, day: str, overwrite: bool):
 
 	# creates the day file if it does not exist
 	if overwrite or not os.path.isfile(start_path + "day" + day + ".py"):
-		print("Day file does not exist (dayXX.py will be created)")
+		if not quiet:
+			print("Day file does not exist (dayXX.py will be created)")
 
 		# writes the boilerplate code for the day file
 		day_template = open("./day_template_python.py").read()
@@ -28,7 +29,8 @@ def create_day(year: str, day: str, overwrite: bool):
 			f.write(day_template)
 
 	else:
-		print("Day file exists, use --overwrite to overwrite the file")
+		if not quiet:
+			print("Day file exists, use --overwrite to overwrite the file")
 
 
 def min_value_type(min_value: int):
@@ -121,7 +123,7 @@ def main():
 		input_path = os.path.join(year, "input", "day" + day + ".txt")
 
 		# create the input file
-		if not create_input_file(input_path, day.lstrip("0"), year):
+		if not create_input_file(input_path, day.lstrip("0"), year, quiet=args.quiet):
 			print("Could not get input file for %s day %s" % (year, day))
 			sys.exit(1)
 
