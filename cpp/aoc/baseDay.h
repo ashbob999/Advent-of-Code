@@ -67,7 +67,7 @@ bool BaseDay::load_input()
 	fp.seekg(0, fp.end);
 
 	// get length of file
-	int len = fp.tellg();
+	int len = static_cast<int>(fp.tellg());
 	// cout << "length: " << len << endl;
 	this->input_length = len;
 
@@ -129,4 +129,18 @@ double BaseDay::run()
 	this->input = this->input_start;
 
 	return t;
+}
+
+template<std::size_t Size>
+std::ostream& operator<<(std::ostream& os, const std::array<char, Size>& data)
+{
+	for (auto&& c : data)
+	{
+		if (c == '\0')
+		{
+			break;
+		}
+		os.put(c);
+	}
+	return os;
 }

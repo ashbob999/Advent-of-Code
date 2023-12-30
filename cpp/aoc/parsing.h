@@ -65,7 +65,7 @@ namespace
 													   mask, mask, mask, mask, mask, 0,	   1,	 2,	   3,	 4,	   5,
 													   6,	 7,	   8,	 9,	   10,	 11,   12,	 13,   14,	 15};
 
-		const const char* lookup_center = shift_shuffle_lookup + 16;
+		const char* lookup_center = shift_shuffle_lookup + 16;
 		const __m128i shuffle = _mm_lddqu_si128(reinterpret_cast<const __m128i*>(lookup_center - num_bytes));
 		return _mm_shuffle_epi8(a, shuffle);
 	}
@@ -78,8 +78,6 @@ namespace
 */
 inline uint64_t parse_uint64_fast(char*& data)
 {
-	std::uint64_t value = 0;
-
 	__m128i chunk = _mm_loadu_si128(reinterpret_cast<__m128i*>(data));
 
 	const __m128i zeros = _mm_set1_epi8('0');
@@ -107,7 +105,7 @@ inline uint64_t parse_uint64_fast(char*& data)
 		chunk = _mm_madd_epi16(chunk, mult);
 	}
 
-	std::uint64_t low = _mm_extract_epi64(chunk, 0);
+	uint64_t low = _mm_extract_epi64(chunk, 0);
 
 	uint64_t result = ((low & 0xffffffff) * 100000000) + (low >> 32);
 
