@@ -15,57 +15,13 @@ if not isfile(file_name):
 
 from utils import *
 
-data = parsefile(file_name,  [list, "\n"])
-
-input = """...........
-.....###.#.
-.###.##..#.
-..#.#...#..
-....#.#....
-.##..S####.
-.##..#...#.
-.......##..
-.##.#.####.
-.##..##.##.
-..........."""
-input_ = """.................................
-.....###.#......###.#......###.#.
-.###.##..#..###.##..#..###.##..#.
-..#.#...#....#.#...#....#.#...#..
-....#.#........#.#........#.#....
-.##...####..##...####..##...####.
-.##..#...#..##..#...#..##..#...#.
-.......##.........##.........##..
-.##.#.####..##.#.####..##.#.####.
-.##..##.##..##..##.##..##..##.##.
-.................................
-.................................
-.....###.#......###.#......###.#.
-.###.##..#..###.##..#..###.##..#.
-..#.#...#....#.#...#....#.#...#..
-....#.#........#.#........#.#....
-.##...####..##..S####..##...####.
-.##..#...#..##..#...#..##..#...#.
-.......##.........##.........##..
-.##.#.####..##.#.####..##.#.####.
-.##..##.##..##..##.##..##..##.##.
-.................................
-.................................
-.....###.#......###.#......###.#.
-.###.##..#..###.##..#..###.##..#.
-..#.#...#....#.#...#....#.#...#..
-....#.#........#.#........#.#....
-.##...####..##...####..##...####.
-.##..#...#..##..#...#..##..#...#.
-.......##.........##.........##..
-.##.#.####..##.#.####..##.#.####.
-.##..##.##..##..##.##..##..##.##.
-................................."""
-#data = parse(input, [list, "\n"])
+data = parsefile(file_name, [list, "\n"])
 
 height = len(data)
 width = len(data[0])
-print(width, height)
+
+assert width == height
+size = width
 
 start = None
 for y in range(height):
@@ -80,298 +36,144 @@ adj = ((0, 1), (0, -1), (1, 0), (-1, 0))
 
 grid = [r[:] for r in data]
 
+
 def step(gardens):
 	next_gardens = set()
-	
+
 	for g in gardens:
 		for ad in adj:
 			nx = g[0] + ad[0]
 			ny = g[1] + ad[1]
-			
+
 			if 0 <= nx < width and 0 <= ny < height:
-				#print(nx, ny, width, height)
 				if grid[ny][nx] != "#":
 					next_gardens.add((nx, ny))
-	
+
 	return next_gardens
-	
-def step2(gardens):
-	next_gardens = set()
-	
-	for g in gardens:
-		for ad in adj:
-			nx = g[0] + ad[0]
-			ny = g[1] + ad[1]
-			
-			nxm = nx % width
-			nym = ny % height
-			
-			#print(nx, ny, width, height)
-			if grid[nym][nxm] != "#":
-				next_gardens.add((nx, ny))
-	
-	return next_gardens
+
 
 def part1():
 	gardens = set()
 	gardens.add(start)
-	
-	vals = []
-	
-	for i in range(250):
-		gardens = step2(gardens)
-		vals.append(len(gardens))
-		print(i, vals[-1])
-	
+
+	for i in range(64):
+		gardens = step(gardens)
+	# print(i, vals[-1])
+
 	g = [r[:] for r in grid]
 	for garden in gardens:
-		if g[garden[1]%height][garden[0]%width] ==".":
-			g[garden[1]%height][garden[0]%width] = "O"
-	
-	"""
-	with open("day21_output.txt", "w") as f:
-		for r in g:
-			f.write("".join(r))
-			f.write("\n")
-	"""
-	
-	d1 = [vals[i] - vals[i-1] for i in range(1, len(vals))]
-	d2 = [d1[i] - d1[i-1] for i in range(1, len(d1))]
-	d3 = [d2[i] - d2[i-1] for i in range(1, len(d2))]
-	d4 = [d3[i] - d3[i-1] for i in range(1, len(d3))]
-	
-	
-	print(d1)
-	print(d2)
-	print(d3)
-	print(d4)
+		if g[garden[1] % height][garden[0] % width] == ".":
+			g[garden[1] % height][garden[0] % width] = "O"
+
 	return len(gardens)
 
-# initial caching
-cache = {}
 
+def step2(gardens: set, not_gardens: set):
+	gardens, not_gardens = not_gardens, gardens
+	new_gardens = set()
+	new_not_gardens = set()
 
-def check(start):
-	even = {}
-	odd = {}
-	
-	max_v = (start, 0)
-	min_top = None
-	min_bottom = None
-	min_left = None
-	min_right = None
-	
-	if grid[start[1]][start[0]] == "#":
-		assert False
-		return None
-	
-	to_check = [(start, 0)]
-	to_check_set = set()
-	to_check_set.add(start)
-	while len(to_check) > 0:
-		#print(len(to_check), to_check)
-		if len(to_check) > 10:
-			pass#quit()
-		curr, dist = to_check.pop(0)
-		to_check_set.remove(curr)
-		
-		if dist > max_v[1]:
-			max_v = (curr, dist)
-		
-		if dist % 2 == 0:
-			even[curr] = dist
-		else:
-			odd[curr] = dist
-		
-		if curr[0] == 0: # left
-			if min_left is None:
-				min_left = (curr, dist)
-				
-		if curr[0] == width-1: # right
-			if min_right is None:
-				min_right = (curr, dist)
-				
-		if curr[1] == 0: # top
-			if min_top is None:
-				min_top = (curr, dist)
-		
-		if curr[1] == height-1: # bottom
-			if min_bottom is None:
-				min_bottom = (curr, dist)
-		
+	for g in gardens:
 		for ad in adj:
-			nx = curr[0] + ad[0]
-			ny = curr[1] + ad[1]
-			
-			if 0 <= nx < width and 0 <= ny < height:
-				#print(nx, ny, width, height)
-				if grid[ny][nx] != "#":
-					p = (nx, ny)
-					if p not in odd and p not in even:
-						if p not in to_check_set:
-							to_check.append((p, dist+1))
-							to_check_set.add(p)
+			nx = g[0] + ad[0]
+			ny = g[1] + ad[1]
 
-	assert min_left is not None
-	assert min_right is not None
-	assert min_top is not None
-	assert min_bottom is not None
-	
-	return odd, even, (min_left, min_right, min_top, min_bottom), max_v
+			n = (nx, ny)
 
-"""
-# top
-for x in range(width):
-	p = (x, 0)
-	print(p)
-	if p not in cache:
-		cache[p] = check(p)
-print("top done")
-		
-# bottom
-for x in range(width):
-	p = (x, height-1)
-	print(p)
-	if p not in cache:
-		cache[p] = check(p)
-print("bottom done")
-		
-# left
-for y in range(height):
-	p = (0, y)
-	print(p)
-	if p not in cache:
-		cache[p] = check(p)
-print("left done")
-		
-# right
-for y in range(height):
-	p = (width-1, y)
-	print(p)
-	if p not in cache:
-		cache[p] = check(p)
-print("right done")
-"""
+			if n not in new_gardens and n not in new_not_gardens:
+
+				nxm = nx % width
+				nym = ny % height
+
+				if grid[nym][nxm] != "#":
+					new_not_gardens.add(n)
+
+	for g in not_gardens:
+		for ad in adj:
+			nx = g[0] + ad[0]
+			ny = g[1] + ad[1]
+
+			n = (nx, ny)
+
+			if n not in new_gardens and n not in new_not_gardens:
+
+				nxm = nx % width
+				nym = ny % height
+
+				if grid[nym][nxm] != "#":
+					new_gardens.add(n)
+
+	gardens |= new_gardens
+	not_gardens |= new_not_gardens
+	return new_gardens, new_not_gardens
 
 
-def solve(steps, start):
-	even = steps %2==0
-	
-	seen = set()
-	
-	to_check = []
-	#to_check_set = set()
-	to_check_data = {}
-	
-	to_check.append((0, 0))
-	to_check_data[(0, 0)] = (start, 0)
-	
-	total = 0
-	
-	while len(to_check) > 0:
-		curr = to_check.pop(0)
-		#to_check_set.remove(curr)
-		entry, curr_step = to_check_data[curr]
-		del to_check_data[curr]
-		
-		if curr in seen:
-			continue
-			
-		seen.add(curr)
-		
-		odd, even, exits, max_v = check(entry)
-		print(curr, entry, exits)
-		
-		print("-", curr, curr_step, max_v, steps)
-		# check if no more grids need to be checked
-		if curr_step + max_v[1] >= steps:
-			diff = steps - curr_step
-			# ee = e
-			# oo = e
-			# eo = o
-			# oe = o
-			curr_even = curr_step%2==0
-			if curr_even and even:
-				vals = even # even
-			else:
-				vals = odd # odd
-			
-			t= 0
-			print("add1 check", diff)
-			for k, v in vals.items():
-				if v <= diff:
-					print(k, v)
-					t += 1
-			
-			print("adding 1:", curr, t)
-			total += t
-		
-		elif curr_step + max_v[1] < steps:
-			curr_even = curr_step%2==0
-			if curr_even and even:
-				vals = even # even
-			else:
-				vals = odd # odd
-			
-			print("adding 2: ", curr, len(vals))
-			total += len(vals)
-		else:
-			assert False
-		
-		for i, exit in enumerate(exits):
-			if curr_step + exit[1] < steps:
-				if i == 0: # left
-					next_ = (curr[0]-1, curr[1])
-					np = (width-1, exit[0][1])
-				elif i == 1: # right
-					next_ = (curr[0]+1, curr[1])
-					np = (0, exit[0][1])
-				elif i == 2: # top
-					next_ = (curr[0], curr[1]-1)
-					np = (exit[0][0], height-1)
-				elif i == 3: # bottom
-					next_ = (curr[0], curr[1]+1)
-					np = (exit[0][0], 0)
-				else:
-					assert False
-				
-				next_steps = curr_step + exit[1] + 1
-				#print("next", next_, exit, np, next_steps)
-				if next_ not in to_check_data:
-					to_check.append(next_)
-					to_check_data[next_] = (np, next_steps)
-				if to_check_data[next_][1] > next_steps:
-					to_check_data[next_] = (np, next_steps)
-					
-	print("seen", steps, seen)
-	return total
-
+def do_steps(gardens, not_gardens, steps):
+	for i in range(steps):
+		gardens, not_gardens = step2(gardens, not_gardens)
+	return gardens, not_gardens
 
 
 def part2():
 	step_count = 26501365
+
+	"""
+	the target steps end on a border of the grids
+	so steps % size == size // 2 
+
+	at the end of each full grid size the number of gardens follows a quadratic sequence
+
+	y = ax^2 + bx + c
 	
-	r = solve(step_count, start)
-	return r
+	2a = 2nd diff
+	3a + b = 1st diff (y[2] - y[1])
+	a + b + c = y[1]
+	"""
+
+	full_count = step_count // size
+	steps_to_edge_of_grid = size // 2
+
+	rem = step_count % size
+
+	assert rem == steps_to_edge_of_grid
+
+	y_vals = []
+
+	gardens = set()
+	not_gardens = set()
+	gardens.add(start)
+
+	# do initial steps y[0]
+	# gardens = do_steps(gardens, steps_to_edge_of_grid)
+	gardens, not_gardens = do_steps(gardens, not_gardens, steps_to_edge_of_grid)
+	y_vals.append(len(gardens))
+
+	# y[1]
+	# gardens = do_steps(gardens, size)
+	gardens, not_gardens = do_steps(gardens, not_gardens, size)
+	y_vals.append(len(gardens))
+
+	# y[2]
+	# gardens = do_steps(gardens, size)
+	gardens, not_gardens = do_steps(gardens, not_gardens, size)
+	y_vals.append(len(gardens))
+
+	first_diffs = [y_vals[i + 1] - y_vals[i] for i in range(len(y_vals) - 1)]
+	second_diffs = [first_diffs[i + 1] - first_diffs[i] for i in range(len(first_diffs) - 1)]
+
+	a = second_diffs[0] / 2
+	b = first_diffs[0] - 3 * a
+	c = y_vals[0] - a - b
+
+	def eq(x):
+		return a * (x ** 2) + b * x + c
+
+	for i, y in enumerate(y_vals, 1):
+		assert eq(i) == y
+
+	result = eq(full_count + 1)
+	return int(result)
 
 
 p1()
-print()
-
-test_values = [
-	(6, 16),
-	(10, 50),
-	(50, 1594),
-	(100, 6536),
-	(500, 167004),
-	(1000, 668697),
-	(5000, 16733044)
-]
-
-
-for v in test_values:
-	print()
-	r = solve(v[0], start)
-	assert v[1] == r, print(v, r)
-
 p2()
