@@ -17,233 +17,91 @@ from utils import *
 
 data = parsefile(file_name, [[int, ""], "\n"])
 
-input = """2413432311323
-3215453535623
-3255245654254
-3446585845452
-4546657867536
-1438598798454
-4457876987766
-3637877979653
-4654967986887
-4564679986453
-1224686865563
-2546548887735
-4322674655533"""
-data = parse(input, [[int, ""], "\n"])
-
 height = len(data)
 width = len(data[0])
 
-def neb(x, y):
-	r = []
-	if x > 0:
-		r.append((x-1, y))
-		
-	if x < width -1:
-		r.append((x+1, y))
-		
-	if y > 0:
-		r.append((x, y-1))
-		
-	if y < height-1:
-		r.append((x, y+1))
-		
-	return r
+# dirs
+# 0 up
+# 1 right
+# 2 down
+# 3 left
 
-def make_path(prev, start, end):
-	if start == end:
-		return []
-	if end not in prev:
-		return []
-	
-	path = []
-	while end is not None:
-		path.append(end)
-		end = prev[end]
-		
-	return path[::-1]
+dirs_go_left = {0: 3, 1: 0, 2: 1, 3: 2}
+dirs_go_right = {0: 1, 1: 2, 2: 3, 3: 0}
 
-def count_prev(prev, curr, new):
-	# check last 4 for same axis
-	n = 5
-	last_n = [new]
-	
-	for i in range(n-1):
-		if curr is None:
-			break
-		last_n.append(curr)
-		curr = prev[curr]
-		
-	"""
-	while curr is not None:
-		last_4.append(curr)
-		curr = prev[curr]
-	"""
-	
-	print(last_n)
-	
-	if len(last_n) != n:
-		return True
-		
-	# y axis
-	if len(set(map(lambda v: v[1], last_n))) == 1:
-		return False
-		
-	# x axis
-	if len(set(map(lambda v: v[0], last_n))) == 1:
-		return False
-	
-	return True
+dirs_move = {0: (0, -1), 1: (1, 0), 2: (0, 1), 3: (-1, 0)}
 
-from collections import deque
+
+def move_pos(pos, dir):
+	diff = dirs_move[dir]
+	return pos[0] + diff[0], pos[1] + diff[1]
+
+
+def get_next_pos(pos, dir, steps):
+	# can only
+	#   turn left
+	#   turn right
+	#   go straight
+
+	next_pos = []
+
+	# turn left
+	left_dir = dirs_go_left[dir]
+	next_pos.append((move_pos(pos, left_dir), left_dir, 1))
+
+	# turn right
+	right_dir = dirs_go_right[dir]
+	next_pos.append((move_pos(pos, right_dir), right_dir, 1))
+
+	# go straight
+	next_pos.append((move_pos(pos, dir), dir, steps + 1))
+
+	return next_pos
+
+
 import heapq
 
-def search(grid, start, end):
+
+def search(grid, start, end, min_steps, max_steps):
 	if start == end:
 		return []
-		
+
+	# (cost, pos, dir, steps_in_dir)
 	to_check = []
+	heapq.heappush(to_check, (0, start, 1, 0))
+	heapq.heappush(to_check, (0, start, 2, 0))
+
+	# (pos, dir, steps_in_dir)
 	seen = set()
-	dist = {}
-	prev = {}
-	
-	prev[start] = None
-	dist[start] = 0
-	
-	heapq.heappush(to_check, (0, start))
-	
+
 	while len(to_check) > 0:
-		g, curr = heapq.heappop(to_check)
-		seen.add(curr)
-		
-		if curr == end:
-			return make_path(prev, start, end)
-		
-		for n in neb(*curr):
-			if not count_prev(prev, curr, n):
-				continue
-			
-			if n not in seen or True:
-				w = grid[n[1]][n[0]]
-				f = g + w
-				if n not in dist or f < dist[n]:
-					dist[n] = f
-					prev[n] = curr
-					heapq.heappush(to_check, (f, n))
-					
-	return make_path(prev, start, end)
+		cost, curr, dir, steps = heapq.heappop(to_check)
 
+		if curr == end and steps >= min_steps:
+			return cost
 
-def count_prev2(path, new):
-	# check last 4 for same axis
-	n = 5
-	last_n = path[-(n-1):] + [new]
-	
-	#print(last_n)
-	
-	if len(last_n) != n:
-		#print(path, last_n)
-		return True
-	
-	#print(last_n)
-	# y axis
-	if len(set(map(lambda v: v[1], last_n))) == 1:
-		return False
-		
-	# x axis
-	if len(set(map(lambda v: v[0], last_n))) == 1:
-		return False
-	
-	return True
-
-
-def adj_pos(path):
-	if len(path) == 0:
-		assert False
-	
-	n = neb(*path[-1])
-	if len(path) > 1:
-		n = [v for v in n if v != path[-2]]
-	
-	n = [v for v in n if count_prev2(path, v)]
-	
-	return n
-
-def dist(p1, p2):
-	return abs(p1[0]-p2[0]) + abs(p1[1]-p2[1])
-
-def search2(grid, start, end):
-	if start == end:
-		return []
-		
-	to_check = []
-	seen = set()
-	
-	path = [start]
-	
-	mem = {}
-	
-	found = None
-	
-	heapq.heappush(to_check, (0, path))
-	
-	while len(to_check) > 0:
-		g, curr = heapq.heappop(to_check)
-		seen.add(tuple(curr))
-		
-		#print(curr[-1], g)
-		if curr[-1] == end:
-			print("match", g)
-			if found is not None:
-				if found[0] > g:
-					found = (g, curr)
-			else:
-				found = (g, curr)
+		if (curr, dir, steps) in seen:
 			continue
-			
-		if found is not None:
-			if g >= found[0]:
-				break
-		
-		for n in adj_pos(curr):
-			w = grid[n[1]][n[0]]
-			f = g + w
-			if (curr[-1], n) not in mem or mem[(curr[-1], n)] > f:
-			#if n not in dist or f < dist[n]:
-				#dist[n] = f
-				#prev[n] = curr
-				#mem[(curr[-1], n)] = f
-				heapq.heappush(to_check, (f, curr + [n]))
-	
-	if found is None:
-		assert False
-	return found[1]
-	assert False
+
+		seen.add((curr, dir, steps))
+
+		for (next_pos, next_dir, next_steps) in get_next_pos(curr, dir, steps):
+			if 0 <= next_pos[0] < width and 0 <= next_pos[1] < height:
+				if (dir == next_dir and next_steps <= max_steps) or (dir != next_dir and steps >= min_steps):
+					next_cost = cost + grid[next_pos[1]][next_pos[0]]
+					heapq.heappush(to_check, (next_cost, next_pos, next_dir, next_steps))
+
+	return None
 
 
 def part1():
-	path = search2(data, (0, 0), (width-1, height-1))
-	print(path)
-	
-	grid = [["." for x in range(width)] for y in range(height)]
-	
-	print()
-	for p in path:
-		grid[p[1]][p[0]] = "#"
-	for l in grid:
-		print("".join(l))
-	print()
-	
-	s = 0
-	for p in path[1:]:
-		s += data[p[1]][p[0]]
-		
-	return s
+	cost = search(data, (0, 0), (width - 1, height - 1), 0, 3)
+	return cost
 
 
 def part2():
-	pass
+	cost = search(data, (0, 0), (width - 1, height - 1), 4, 10)
+	return cost
 
 
 p1()
