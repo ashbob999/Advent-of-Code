@@ -4,5 +4,3 @@
 #include "./aoc/includes.h"
 #include "./aoc/parsing.h"
 #include "./aoc/runner.h"
-
-using namespace std;

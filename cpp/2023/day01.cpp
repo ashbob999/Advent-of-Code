@@ -231,7 +231,7 @@ public:
 			if (*input == '\n')
 			{
 				// reverse line
-				create_reversed(line, reversed_line);
+				create_reversed<LineLength>(line, reversed_line);
 
 				solve_both(line, reversed_line, i);
 
