@@ -168,3 +168,12 @@ inline int64_t parse_int64_fast(char*& data)
 	}
 	return neg * parse_uint64_fast(data);
 }
+
+inline int64_t parse_int64_fast_withLeadingSpacing(char*& data)
+{
+	while (*data == ' ')
+	{
+		data++;
+	}
+	return parse_int64_fast(data);
+}
