@@ -21,7 +21,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 # generate the day file
-python generate.py -y $year -d $day --input --session
+python generate.py -y $year -d $day -a
 
 # open the day file
 termux-open $year/day$day.py
