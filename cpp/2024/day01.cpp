@@ -30,9 +30,19 @@ public:
 		std::sort(vals1.begin(), vals1.end());
 		std::sort(vals2.begin(), vals2.end());
 
-		for (size_t i = 0; i < vals1.size(); i++)
+		for (size_t i = 0; i < vals1.size(); i += 8)
 		{
-			part1 += std::abs(vals1[i] - vals2[i]);
+			__m256i v1 = _mm256_loadu_epi32(vals1.data() + i);
+			__m256i v2 = _mm256_loadu_epi32(vals2.data() + i);
+
+			__m256i res = _mm256_abs_epi32(_mm256_sub_epi32(v1, v2));
+
+			__m256i combined = _mm256_hadd_epi32(res, res);
+
+			long long total = _mm256_extract_epi32(combined, 0) + _mm256_extract_epi32(combined, 1) +
+				_mm256_extract_epi32(combined, 4) + _mm256_extract_epi32(combined, 5);
+
+			part1 += total;
 		}
 
 		size_t i = 0;
