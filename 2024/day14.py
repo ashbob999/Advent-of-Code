@@ -34,7 +34,7 @@ for d  in data:
 	
 	robots.append((x, y ,vx ,vy))
 	
-print(robots[0])
+print(len(robots))
 
 def part1():
 	q1 = 0
@@ -65,25 +65,16 @@ def part1():
 			
 	return q1 * q2 * q3 * q4
 
-
-from typing import Iterator, Tuple
-from itertools import groupby
-
-def run_length_encode(data: str) -> Iterator[Tuple[str, int]]:
-    """Returns run length encoded Tuples for string"""
-    # A memory efficient (lazy) and pythonic solution using generators
-    return [(x, sum(1 for _ in y)) for x, y in groupby(data)]
-
-
-from PIL import Image
+#from PIL import Image
 
 def part2():
-	min_100 = []
-	min_v = None
+	min_v = (-1, 1000000000)
 	
-	for i in range(1, w*h+1):
-		if i % 1000 == 0: print(i)
-		rbs = set()
+	for i in range(1, w*h):
+		#if i % 1000 == 0: print(i)
+		
+		ng = [0] * (w*h)
+		
 		for r in robots:
 			nx = r[0] + i * r[2]
 			ny = r[1] + i * r[3]
@@ -91,79 +82,40 @@ def part2():
 			nx %= w
 			ny %= h
 			
-			rbs.add((nx, ny))
-			
-		ng = [1 if (x, y) in rbs else 0 for x in range(w) for y in range(h)]
+			ng[w*ny + nx] = 1
 		
-		#rl = run_length_encode(ng)
+		
+		"""
+		Do a cheap and dirty run-length encoding
+		of the grid spaces.
+		By countint diff when a space type changes.
+		Which assumes the 'tree' grid is compressible
+		and not just noise.
+		"""
 		
 		diffs = 0
-		cv = None
-		
+		cv = 0
+
 		fail = False
-		for y in range(h):
-			for x in range(w):
-				v = 1 if (x, y) in rbs else 0
-				if cv is None:
-					cv = v
-				else:
-					if cv != v:
-						cv = v
-						diffs += 1
-						
-						if min_v is not None and diffs > min_v[1]:
-							fail = True
-							break
-							
-			if fail:
-				break
-				
+		for j in range(w*h):
+			v = ng[j]
+			
+			if cv != v:
+				cv = v
+				diffs += 1
+					
+				if diffs > min_v[1]:
+					fail = True
+					break
+		
 		if fail:
 			continue
-						
-		if min_v is None or diffs < min_v[1]:
+		
+		if diffs < min_v[1]:
 			min_v = (i, diffs)
 		
-		"""
-		if min_v is None or len(rl) < min_v[1]:
-			min_v = (i, len(rl))
-		"""
-		"""
-		if len(min_100) < 100:
-			min_100.append((i, rl))
-			
-			min_100.sort(key=lambda x: len(x[1]))
-		else:
-			if len(min_100[-1][1]) > len(rl):
-				min_100[-1] = (i, rl)
-				
-				min_100.sort(key=lambda x: len(x[1]))
-		"""
 	
 	"""
-	for v in min_100:
-		rbs = set()
-		for r in robots:
-			nx = r[0] + v[0] * r[2]
-			ny = r[1] + v[0] * r[3]
-		
-			nx %= w
-			ny %= h
-			
-			rbs.add((nx, ny))
-	
-	
-		img = Image.new("RGB", (w, h))
-	
-		pix = img.load()
-		for r in rbs:
-			#print(r)
-			pix[r] = (255, 255, 255)
-	
-		img.save("min_100/" + str(v[0]) + ".jpg")
-	
-	"""
-	
 	rbs = set()
 	for r in robots:
 		nx = r[0] + min_v[0] * r[2]
@@ -183,31 +135,9 @@ def part2():
 		pix[r] = (255, 255, 255)
 
 	img.save("day14_p2_min_v_" + str(min_v[0]) + ".jpg")
+	"""
 	
 	return min_v[0]
-	
-	
-	for i in range(2000, 3000):
-		print(i)
-		rbs = set()
-		for r in robots:
-			nx = r[0] + i * r[2]
-			ny = r[1] + i * r[3]
-		
-			nx %= w
-			ny %= h
-			
-			rbs.add((nx, ny))
-	
-	
-		img = Image.new("RGB", (w, h))
-	
-		pix = img.load()
-		for r in rbs:
-			#print(r)
-			pix[r] = (255, 255, 255)
-	
-		img.save("day14_3/" + str(i) + ".jpg")
 
 
 p1()
