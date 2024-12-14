@@ -1,10 +1,42 @@
 #pragma once
 
 #include <immintrin.h>
+#include <type_traits>
 
 template<typename T>
-inline T numericParse(char*& p)
+inline std::enable_if_t<!std::is_signed_v<T>, T> numericParse(char*& p)
 {
+	// T is unsigned
+	bool have = false;
+
+	T n = 0;
+	for (; *p != '\0'; p++)
+	{
+		// cout << "n: " << n << " ";
+		// cout << "char: " << *p << " ";
+		T d = *p - '0';
+		// cout << "digit: " << d << " ";
+		if (/*d >= 0 &&*/ d <= 9)
+		{
+			n = 10 * n + d;
+			have = true;
+		}
+		else if (have)
+		{
+			return n;
+		}
+	}
+	if (have)
+	{
+		return n;
+	}
+	return 0;
+}
+
+template<typename T>
+inline std::enable_if_t<std::is_signed_v<T>, T> numericParse(char*& p)
+{
+	// T is signed
 	bool have = false;
 	T neg = 1;
 	if (*p == '-')
@@ -17,6 +49,7 @@ inline T numericParse(char*& p)
 		neg = 1;
 		p++;
 	}
+
 	T n = 0;
 	for (; *p != '\0'; p++)
 	{
@@ -39,6 +72,16 @@ inline T numericParse(char*& p)
 		return n * neg;
 	}
 	return 0;
+}
+
+template<typename T>
+inline T numericParseWithLeadingSpaces(char*& p)
+{
+	while (*p == ' ')
+	{
+		p++;
+	}
+	return numericParse<T>(p);
 }
 
 namespace
@@ -124,4 +167,13 @@ inline int64_t parse_int64_fast(char*& data)
 		data++;
 	}
 	return neg * parse_uint64_fast(data);
+}
+
+inline int64_t parse_int64_fast_withLeadingSpacing(char*& data)
+{
+	while (*data == ' ')
+	{
+		data++;
+	}
+	return parse_int64_fast(data);
 }

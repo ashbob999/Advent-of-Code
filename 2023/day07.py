@@ -103,10 +103,14 @@ def rank2(cards):
 		return 7 # 5 kind
 	if jsc == 4:
 		return 7 # 5 kind
-	if jsc == 3:
-		return 6 # 4 kind
+
 	
 	nums = list(d.values())
+
+	if jsc == 3:
+		if 2 in nums:
+			return 7 # 5 kind
+		return 6 # 4 kind
 	
 	if jsc == 2:
 		if 3 in nums:
