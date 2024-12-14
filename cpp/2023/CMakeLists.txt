@@ -25,6 +25,6 @@ find_package(Z3 CONFIG REQUIRED)
 
 include_directories(${SOURCE_DIR})
 
-add_executable(aoc_2023_cpp "main.cpp" "../aocHelper.h" "day01.cpp" "day24.cpp" "day04.cpp" "day05.cpp" "day06.cpp" "day07.cpp" "day08.cpp" "day09.cpp" "day10.cpp")
+add_executable(aoc_2023_cpp "main.cpp" "../aocHelper.h" "day01.cpp" "day24.cpp" "day04.cpp" "day05.cpp" "day06.cpp" "day07.cpp" "day08.cpp" "day09.cpp" "day10.cpp" "day11.cpp" "day12.cpp")
 
 target_link_libraries(aoc_2023_cpp PRIVATE z3::libz3)

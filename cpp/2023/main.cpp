@@ -10,6 +10,8 @@
 #include "day08.cpp"
 #include "day09.cpp"
 #include "day10.cpp"
+#include "day11.cpp"
+#include "day12.cpp"
 #include "day24.cpp"
 
 using namespace std;
@@ -26,15 +28,17 @@ int main()
 	Day08 d8{};	 // done
 	Day09 d9{};	 // done
 	Day10 d10{}; // done slow
+	Day11 d11{}; // done
+	Day12 d12{}; // done slow
 	Day24 d24{}; // done slow
 
-	auto&& cd = d10;
+	auto&& cd = d12;
 
 	vector<BaseDay*> days = {// &d1, &d2, &d3, &d4, &d5, &d6, &d7, &d8, &d9, &d10, &d11, &d12, &d13, &d14, &d15, &d16,
 							 // &d17, &d18, &d19, &d20, &d21, &d22, &d23, &d24, &d25
 							 &cd};
 
-	runDays(days, {100});
+	//runDays(days, {1000});
 
 	cd.load_input();
 	auto res = cd.solve();
