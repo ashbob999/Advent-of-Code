@@ -11,4 +11,4 @@ file(GLOB INPUT_FILES
 file(COPY ${INPUT_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/input)
 
 include_directories(${SOURCE_DIR})
-add_executable(aoc_2021_cpp "main.cpp" "../aocHelper.cpp" "../aocHelper.h" "day01.cpp" "day02.cpp" "day03.cpp" "day04.cpp" "day05.cpp" "day06.cpp" "day07.cpp" "day08.cpp" "day09.cpp" "day10.cpp" "day11.cpp" "day12.cpp" "day13.cpp" "day14.cpp" "day15.cpp")
+add_executable(aoc_2021_cpp "main.cpp" "../aocHelper.cpp" "../aocHelper.h" "day01.cpp" "day02.cpp" "day03.cpp" "day04.cpp" "day05.cpp" "day06.cpp" "day07.cpp" "day08.cpp" "day09.cpp" "day10.cpp" "day11.cpp" "day12.cpp" "day13.cpp" "day14.cpp" "day15.cpp" "day16.cpp" "day17.cpp")
