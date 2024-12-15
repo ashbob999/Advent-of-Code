@@ -81,7 +81,6 @@ def part1():
 	assert len(loop) % 2 == 1
 	return len(loop) // 2
 
-# 7094
 
 def bfs(start):
 	to_check = [start]

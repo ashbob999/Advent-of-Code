@@ -1,5 +1,6 @@
 #include "../aocHelper.h"
 
+#include <bit>
 #include <immintrin.h>
 
 namespace
@@ -42,7 +43,58 @@ namespace
 			}
 		}
 
-		return std::string::npos;
+		return -1;
+	}
+
+	template<int LineLength>
+	int fast_digit_find(const std::array<char, LineLength>& line)
+	{
+		/*
+		zero compare mask
+		blend zeros to be 255
+
+		'0'-'9' => 48-57
+		'a'-'z' => 97-122
+
+		255 - digit
+		'0'-'9' => 207-198
+		'a'-'z' => 158-133
+
+		subtract with saturation: 197
+		'0'-'9' => 1-10
+		'a'-'z' => 0-0
+
+		find lowest non-zero byte
+			compare > zero to get non-zero mask
+			get mask of full bytes
+
+		*/
+
+		const __m256i zero = _mm256_setzero_si256();
+		const __m256i value255 = _mm256_set1_epi8(255);
+		const __m256i value197 = _mm256_set1_epi8(197);
+
+		for (int i = 0; i < LineLength; i += 32)
+		{
+			__m256i bytes = _mm256_loadu_epi8(reinterpret_cast<const __m256i*>(line.data() + i));
+
+			__m256i mask = _mm256_cmpeq_epi8(bytes, zero);
+			bytes = _mm256_blendv_epi8(bytes, value255, mask);
+
+			bytes = _mm256_sub_epi8(value255, bytes);
+
+			bytes = _mm256_subs_epu8(bytes, value197);
+			__m256i bytes2 = _mm256_sub_epi8(bytes, value197);
+
+			__m256i non_zero_mask = _mm256_cmpgt_epi8(bytes, zero);
+			uint32_t bitmask = _mm256_movemask_epi8(non_zero_mask);
+			if (bitmask != 0)
+			{
+				return i + std::countr_zero(bitmask);
+			}
+		}
+
+		return -1;
 	}
 
 	template<int LineLength>
@@ -146,8 +198,8 @@ public:
 				 {"five", {5, 4}},
 				 {"six", {6, 3}},
 				 {"seven", {7, 5}},
-				 {"eight", {8, 4}},
-				 {"nine", {9, 3}}}};
+				 {"eight", {8, 5}},
+				 {"nine", {9, 4}}}};
 
 			constexpr std::array<std::pair<const char*, std::pair<int, int>>, 10> numbers_reversed = {
 				{{"orez", {0, 4}},
@@ -161,41 +213,25 @@ public:
 				 {"thgie", {8, 5}},
 				 {"enin", {9, 4}}}};
 
-			std::string_view sv(line.data(), char_count);
-			std::string_view sv_reversed(reversed_line.data() + (LineLength - char_count), char_count);
-
 			int v1_index = 1000;
 			int v1 = 0;
 
-			for (int i = 0; i < sv.size(); i++)
-			{
-				char c = sv[i];
-				if (c >= '0' && c <= '9' && i < v1_index)
-				{
-					v1_index = i;
-					v1 = c - '0';
-				}
-			}
+			v1_index = fast_digit_find(line);
+			v1 = line[v1_index] - '0';
 
 			int v2_index = 1000;
 			int v2 = 0;
 
-			for (int i = 0; i < sv_reversed.size(); i++)
-			{
-				char c = sv_reversed[i];
-				if (c >= '0' && c <= '9' && i < v2_index)
-				{
-					v2_index = i;
-					v2 = c - '0';
-				}
-			}
+			v2_index = fast_digit_find(reversed_line);
+			v2 = reversed_line[v2_index] - '0';
 
 			part1 += v1 * 10 + v2;
 
 			for (auto&& [number, value] : numbers)
 			{
-				int pos1 = fast_find(sv.data(), sv.length(), number, value.second);
-				if (pos1 != std::string::npos && pos1 < v1_index)
+				int pos1 = fast_find(line.data(), LineLength, number, value.second);
+
+				if (pos1 != -1 && pos1 < v1_index)
 				{
 					v1_index = pos1;
 					v1 = value.first;
@@ -204,24 +240,20 @@ public:
 
 			for (auto&& [number, value] : numbers_reversed)
 			{
-				int pos2 = fast_find(sv_reversed.data(), sv_reversed.length(), number, value.second);
+				int pos2 = fast_find(reversed_line.data(), LineLength, number, value.second);
 
-				if (pos2 != std::string::npos && pos2 < v2_index)
+				if (pos2 != -1 && pos2 < v2_index)
 				{
 					v2_index = pos2;
 					v2 = value.first;
 				}
 			}
 
-			// std::cout << v1 << " " << v1_index << " " << v2 << " " << v2_index << " " << v1 * 10 + v2 << " "
-			//<< sv_reversed << " " << std::endl;
 			part2 += v1 * 10 + v2;
 		};
 
-		// testing
-
 		std::array<char, LineLength> line{'\0'};
-		std::array<char, LineLength> reversed_line;
+		std::array<char, LineLength> reversed_line{'\0'};
 		int i = 0;
 
 		const __m256i zero = _mm256_setzero_si256();
@@ -231,7 +263,7 @@ public:
 			if (*input == '\n')
 			{
 				// reverse line
-				create_reversed(line, reversed_line);
+				create_reversed<LineLength>(line, reversed_line);
 
 				solve_both(line, reversed_line, i);
 
