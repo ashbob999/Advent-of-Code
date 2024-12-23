@@ -15,7 +15,9 @@ if not isfile(file_name):
 
 from utils import *
 
-grid = parsefile(file_name,  [list, "\n"])
+grid = parsefile(file_name, [list, "\n"])
+
+saved = 100
 
 w = len(grid[0])
 h = len(grid)
@@ -30,67 +32,79 @@ for y in range(h):
 		elif grid[y][x] == "E":
 			end = (x, y)
 
-import heapq
+adj = ((0, 1), (0, -1), (1, 0), (-1, 0))
 
-adj =  ((0, 1), (0, -1), (1, 0), (-1, 0))
 
-def dfs(s, e, grid):
-	
-	scores = {s: 0}
-	
-	to_check = [(0 ,s)]
-	
+def calc_rev_scores(s, e, grid):
+	scores = {e: 0}
+
+	to_check = [e]
+
 	while len(to_check):
-		score, curr = heapq.heappop(to_check)
-		
+		curr = to_check.pop(0)
+		score = scores[curr]
+
 		for dx, dy in adj:
 			nx = curr[0] + dx
 			ny = curr[1] + dy
-			
-			if nx >= 0 and nx < w and ny >=0 and ny < h and grid[ny][nx] != "#":
+
+			if nx >= 0 and nx < w and ny >= 0 and ny < h and grid[ny][nx] != "#":
 				ns = score + 1
-				
-				if (nx, ny) == e:
-					return ns
-				
-				if (nx, ny) not in scores or ns < scores[(nx, ny)]:
-					scores[(nx, ny)]=ns
-					heapq.heappush(to_check,  (ns, (nx, ny)))
+				if (nx, ny) not in scores:
+					scores[(nx, ny)] = ns
+					to_check.append((nx, ny))
 
-fastest = dfs(start, end, grid)
-print(fastest)
+	return scores
 
-from copy import deepcopy
 
-def part1():
+scores = calc_rev_scores(start, end, grid)
+
+
+def get_cheat_saves(length):
 	c = 0
-	print(w, h)
-
 
 	for y in range(h):
 		for x in range(w):
 			if grid[y][x] == "#":
-				adjc = 0
-				for dx, dy in adj:
-					nx = x + dx
-					ny = y + dy
-					if nx >=0 and nx <w and ny >=0 and ny < h and grid[ny][nx]!="#":
-						adjc += 1
-				
-				if adjc >= 2:
-					print(y, x)
-					g = deepcopy(grid)
-					g[y][x] = "."
-						
-					r = dfs(start, end, g)
-					if r <= fastest -100:
-						c +=1
-	
+				continue
+
+			for y2 in range(h):
+				if abs(y - y2) > length:
+					continue
+				if y2 > y and y2 - y > length:
+					break
+
+				for x2 in range(w):
+					if grid[y2][x2] == "#":
+						continue
+
+					if abs(x - x2) > length:
+						continue
+					if x2 > x and x2 - x > length:
+						break
+
+					if (x, y) == (x2, y2):
+						continue
+
+					dist = abs(x - x2) + abs(y - y2)
+					if dist <= length:
+						s1 = scores[(x, y)]
+						s2 = scores[(x2, y2)]
+
+						if s2 < s1:
+							diff = s1 - s2 - dist
+							if diff >= saved:
+								c += 1
+
 	return c
 
 
+def part1():
+	return get_cheat_saves(2)
+
+
 def part2():
-	pass
+	return get_cheat_saves(20)
 
 
 p1()
