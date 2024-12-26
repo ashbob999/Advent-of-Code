@@ -12,4 +12,4 @@ file(COPY ${INPUT_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/input)
 
 include_directories(${SOURCE_DIR})
 
-add_executable(aoc_2024_cpp "main.cpp" "../aocHelper.h" "day01.cpp")
+add_executable(aoc_2024_cpp "main.cpp" "../aocHelper.h" "day01.cpp" "day14.cpp")
