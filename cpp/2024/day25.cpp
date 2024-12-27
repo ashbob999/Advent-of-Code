@@ -23,7 +23,7 @@ public:
 		constexpr size_t CountPerPadMul4 =
 			(CountPer % 4 == 0) ? CountPer : (static_cast<size_t>(static_cast<float>(CountPer / 4.0f) + 1) * 4);
 		std::array<uint64_t, CountPerPadMul4> locks{};
-		std::array<uint64_t, CountPer> keys{};
+		std::array<uint64_t, CountPerPadMul4> keys{};
 
 		size_t locksIndex = 0;
 		size_t keysIndex = 0;
@@ -106,6 +106,10 @@ public:
 		locks[CountPerPadMul4 - 2] = std::numeric_limits<uint64_t>::max();
 		locks[CountPerPadMul4 - 1] = std::numeric_limits<uint64_t>::max();
 
+		static_assert(CountPerPadMul4 % 3 == 0);
+		keys[CountPerPadMul4 - 2] = std::numeric_limits<uint64_t>::max();
+		keys[CountPerPadMul4 - 1] = std::numeric_limits<uint64_t>::max();
+
 		// part 1
 
 		static_assert(CountPer % 2 == 0);
@@ -113,37 +117,47 @@ public:
 		long long part1_1 = 0;
 		long long part1_2 = 0;
 
+		const __m256i andMask = _mm256_set1_epi64x(1);
+
+		__m256i values1 = _mm256_setzero_si256();
+		__m256i values2 = _mm256_setzero_si256();
+		__m256i values3 = _mm256_setzero_si256();
+
 		for (size_t i = 0; i < CountPerPadMul4; i += 4)
 		{
 			__m256i lockReg = _mm256_loadu_si256(reinterpret_cast<__m256i*>(locks.data() + i));
 
-			for (size_t j = 0; j < CountPer; j += 2)
+			for (size_t j = 0; j < CountPerPadMul4; j += 3)
 			{
 				__m256i keyReg1 = _mm256_set1_epi64x(keys[j]);
 				__m256i keyReg2 = _mm256_set1_epi64x(keys[j + 1]);
+				__m256i keyReg3 = _mm256_set1_epi64x(keys[j + 2]);
 
 				// bitwise-& them together, 64-bit == 0 then the key fits
 				__m256i res1 = _mm256_and_si256(lockReg, keyReg1);
 				__m256i res2 = _mm256_and_si256(lockReg, keyReg2);
+				__m256i res3 = _mm256_and_si256(lockReg, keyReg3);
 
 				// Generate 64-bit mask of keys that fit
 				__m256i fitMask1 = _mm256_cmpeq_epi64(res1, _mm256_setzero_si256());
 				__m256i fitMask2 = _mm256_cmpeq_epi64(res2, _mm256_setzero_si256());
+				__m256i fitMask3 = _mm256_cmpeq_epi64(res3, _mm256_setzero_si256());
 
-				int bits1 = _mm256_movemask_epi8(fitMask1);
-				int bits2 = _mm256_movemask_epi8(fitMask2);
+				// And each 64-bit value in mask by 1
+				__m256i andV1 = _mm256_and_si256(fitMask1, andMask);
+				__m256i andV2 = _mm256_and_si256(fitMask2, andMask);
+				__m256i andV3 = _mm256_and_si256(fitMask3, andMask);
 
-				// Divide by 8, because 8*8==64, and the movemask bives 8-bit granularity and we need 64-bit
-				int fitCount1 = _mm_popcnt_u32(bits1) /*/ 8*/;
-				int fitCount2 = _mm_popcnt_u32(bits2) /*/ 8*/;
-
-				part1_1 += fitCount1;
-				part1_2 += fitCount2;
+				values1 = _mm256_add_epi64(values1, andV1);
+				values2 = _mm256_add_epi64(values2, andV2);
+				values3 = _mm256_add_epi64(values3, andV3);
 			}
 		}
 
-		part1 = part1_1 + part1_2;
-		part1 /= 8;
+		__m256i values = _mm256_add_epi64(values1, values2);
+		values = _mm256_add_epi64(values, values3);
+		part1 = _mm256_extract_epi64(values, 0) + _mm256_extract_epi64(values, 1) + _mm256_extract_epi64(values, 2) +
+			_mm256_extract_epi64(values, 3);
 
 		return {part1, part2};
 	}
