@@ -17,9 +17,9 @@ public:
 
 		while (*input != '\0')
 		{
-			int v1 = numericParse<int>(input);
+			int v1 = numericParse<unsigned int>(input);
 			input += 3; // skip '   '
-			int v2 = numericParse<int>(input);
+			int v2 = numericParse<unsigned int>(input);
 
 			vals1.push_back(v1);
 			vals2.push_back(v2);
