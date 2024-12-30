@@ -25,7 +25,7 @@ def check(o):
 			if r[1] == v:
 				if r[0] in o:
 					index = o.index(r[0])
-					if index > i:
+					if index >= i:
 						return False
 		
 		

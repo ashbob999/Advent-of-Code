@@ -4,7 +4,7 @@
 #include <type_traits>
 
 template<typename T>
-inline std::enable_if_t<!std::is_signed_v<T>, T> numericParse(char*& p)
+inline std::enable_if_t<!std::is_signed_v<T>, T> numericParse(const char*& p)
 {
 	// T is unsigned
 	bool have = false;
@@ -34,7 +34,7 @@ inline std::enable_if_t<!std::is_signed_v<T>, T> numericParse(char*& p)
 }
 
 template<typename T>
-inline std::enable_if_t<std::is_signed_v<T>, T> numericParse(char*& p)
+inline std::enable_if_t<std::is_signed_v<T>, T> numericParse(const char*& p)
 {
 	// T is signed
 	bool have = false;
@@ -72,6 +72,12 @@ inline std::enable_if_t<std::is_signed_v<T>, T> numericParse(char*& p)
 		return n * neg;
 	}
 	return 0;
+}
+
+template<typename T>
+inline T numericParse(char*& p)
+{
+	return numericParse<T>((const char*&) (p));
 }
 
 template<typename T>

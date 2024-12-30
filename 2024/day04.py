@@ -40,22 +40,26 @@ def check(g, word, x, y):
 			found.append(((x, y), 1))
 		
 	# up
-	if y - l >= -1:
+	# if y - l >= -1:
+	if y >= l-1:
 		if all([word[i] == g[y-i][x] for i in range(l)]):
 			found.append(((x, y), 2))
 		
 	# left
-	if x-l >= -1:
+	# if x-l >= -1:
+	if x >= l-1:
 		if all([word[i] == g[y][x-i] for i in range(l)]):
 			found.append(((x, y), 3))
 			
 	# top left
-	if x-l >= -1 and y-l >= -1:
+	# if x-l >= -1 and y-l >= -1:
+	if x >= l-1 and y >= l-1:
 		if all([word[i] == g[y-i][x-i] for i in range(l)]):
 			found.append(((x, y), 4))
 			
 	# top right
-	if x+l <= w and y-l >= -1:
+	# if x+l <= w and y-l >= -1:
+	if x+l <= w and y >= l-1:
 		if all([word[i] == g[y-i][x+i] for i in range(l)]):
 			found.append(((x, y), 5))
 			
