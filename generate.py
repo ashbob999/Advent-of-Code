@@ -99,7 +99,8 @@ def main():
 	if args.get_all_inputs:
 		# gets all the input files for the given year
 		success: bool = True
-		for day_num in range(1, 25 + 1):
+		max_day = 25 if args.year < 2025 else 12
+		for day_num in range(1, max_day + 1):
 			day_str = str(day_num).rjust(2, "0")
 
 			# create the input path
@@ -113,6 +114,11 @@ def main():
 		sys.exit(0 if success else 1)
 
 	day = str(args.day).rjust(2, "0")
+
+	if args.year >= 2025:
+		if args.day > 12:
+			print("Cannot create day, as now there are only 12 days.")
+			sys.exit(1)
 
 	# creates the specified day file
 	# create_day(year, day, overwrite=args.overwrite, gen_session=args.session)
