@@ -15,6 +15,7 @@ if not isfile(file_name):
 
 from utils import *
 
+data = parsefile(file_name, None)
 
 def part1():
 	pass
