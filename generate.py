@@ -75,7 +75,7 @@ def main():
 
 	# adds all argument
 	parser.add_argument("-a", "--all", action="store_true",
-	                    help="Sets --session, -- input, --overwrite to True")
+	                    help="Sets --session, --input, --overwrite to True")
 
 	# adds get all input argument
 	parser.add_argument("--get-all-inputs", action="store_true",
