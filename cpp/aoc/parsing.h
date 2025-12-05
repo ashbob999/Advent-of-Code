@@ -1,6 +1,8 @@
 #pragma once
 
+#if defined(__x86_64__) || defined(_M_AMD64)
 #include <immintrin.h>
+#endif
 #include <type_traits>
 
 template<typename T>
@@ -84,6 +86,7 @@ inline T numericParseWithLeadingSpaces(char*& p)
 	return numericParse<T>(p);
 }
 
+#if defined(__x86_64__) || defined(_M_AMD64)
 namespace
 {
 	inline __m128i get_numeric_mask(__m128i chunk)
@@ -177,3 +180,4 @@ inline int64_t parse_int64_fast_withLeadingSpacing(char*& data)
 	}
 	return parse_int64_fast(data);
 }
+#endif
