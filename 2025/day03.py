@@ -41,6 +41,7 @@ def largest2(arr, count):
 	vals = [0] * (count+1)
 
 	for v in arr:
+		print(*vals)
 		vals[-1] = v
 
 		for j in range(1, count+1):
@@ -55,7 +56,9 @@ def largest2(arr, count):
 def part2():
 	s = 0
 	for arr in data:
-		s += largest2(arr, 12)
+		v = largest2(arr, 12)
+		s += v
+		print(v)
 	return s
 
 
