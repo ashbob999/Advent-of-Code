@@ -37,49 +37,24 @@ def part1():
 	return s
 
 
-cache = {}
-def rec(arr, depth, ci, count):
-	if (depth, ci) in cache:
-		return cache[(depth, ci)]
-
-	if depth > count:
-		return None
-		
-	if ci >= len(arr):
-		return None
-	
-	mx = None
-	for i in range(ci, len(arr) - (count - depth)):
-		cv = arr[i]
-		
-		val = None
-		if depth == count:
-			val = [cv]
-		else:
-			val = [cv, *rec(arr, depth+1, i+1, count)]
-		
-		if mx is None:
-			mx = val
-		else:
-			mx = max(mx, val)
-
-	cache[(depth, ci)] = mx
-	return mx
-	
-
 def largest2(arr, count):
-	vals = arr[:count]
-	val = arr[0] * 10 + arr[1]
-	vals = rec(arr, 1, 0, count)
-	#print(vals)
+	vals = [0] * (count+1)
+
+	for v in arr:
+		vals[-1] = v
+
+		for j in range(1, count+1):
+			if vals[j - 1] < vals[j]:
+				vals.pop(j-1)
+				vals.append(v)
+				break
+
 	return sum(vals[i]*(10**(count-i-1)) for i in range(count))
 
 
 def part2():
-	global cache
 	s = 0
 	for arr in data:
-		cache = {}
 		s += largest2(arr, 12)
 	return s
 
