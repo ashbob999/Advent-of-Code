@@ -20,9 +20,10 @@ data = parsefile(file_name, [[int, "-"], ","])
 
 def checkinvalid(v):
 	s = str(v)
-	if len(s) % 2 != 0:
+	sl = len(s)
+	if sl % 2 != 0:
 		return False
-	return s[:len(s)//2] == s[len(s)//2:]
+	return s[:sl//2] == s[sl//2:]
 
 def getinvalid(low, up):
 	d1 = len(str(low))
@@ -59,7 +60,7 @@ def checkinvalid2(v):
 		
 		ls = l // i
 		start = s[:i]
-		if all([s[i*(ii+1):i*(ii+2)] == start for ii in range(ls-1,)]):
+		if all(s[i*(ii+1):i*(ii+2)] == start for ii in range(ls-1)):
 			return True
 		
 	return False
