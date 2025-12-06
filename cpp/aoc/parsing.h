@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(__x86_64__) || defined(_M_AMD64)
+#if defined(__x86_64__) || defined(_M_X64)
 #include <immintrin.h>
 #endif
 #include <type_traits>
@@ -92,7 +92,7 @@ inline T numericParseWithLeadingSpaces(char*& p)
 	return numericParse<T>(p);
 }
 
-#if defined(__x86_64__) || defined(_M_AMD64)
+#if defined(__x86_64__) || defined(_M_X64)
 namespace
 {
 	inline __m128i get_numeric_mask(__m128i chunk)
