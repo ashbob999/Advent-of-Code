@@ -11,6 +11,15 @@ inline void convertToNums(const char* input, uint8_t* output)
 	_mm256_storeu_si256(reinterpret_cast<__m256i*>(output), res);
 }
 
+inline __m128i bitMaskToByteMask16(int m)
+{
+	// https://stackoverflow.com/questions/72898737/intrinsic-inverse-to-mm-movemask-epi8
+	const __m128i sel = _mm_set1_epi64x(0x8040201008040201);
+	return _mm_cmpeq_epi8(
+		_mm_and_si128(_mm_shuffle_epi8(_mm_cvtsi32_si128(m), _mm_set_epi64x(0x0101010101010101, 0)), sel),
+		sel);
+}
+
 class Day03 : public BaseDay
 {
 public:
@@ -80,35 +89,128 @@ public:
 
 		for (auto& line : lines)
 		{
-			std::array<uint8_t, TargetLength + 1> maxLine{};
+			__m128i maxLine = _mm_setzero_si128();
+			static_assert(sizeof(maxLine) == 128 / 8);
+			static_assert(TargetLength + 1 <= sizeof(maxLine));
 
 			for (uint8_t index = 0; index < Length; index++)
 			{
 				auto& v = line[index];
 
-				maxLine.back() = v;
+				// broadcast value
+				const __m128i broadcastValue = _mm_set1_epi8(v);
 
-				for (uint8_t i = 1; i < maxLine.size(); i++)
-				{
-					auto& prev = maxLine[i - 1];
-					auto& curr = maxLine[i];
+				// blend into last x bytes (index >=12)
+				// because there is no blend_epi8 that takes an immediate value, we use blend_epi16 instead
+				maxLine = _mm_blend_epi16(maxLine, broadcastValue, 0b11000000);
 
-					if (prev < curr)
-					{
-						std::copy(maxLine.begin() + (i), maxLine.end(), maxLine.begin() + (i - 1));
-						maxLine.back() = v;
+				// duplicate (makes a, b)
+				const __m128i duplicate = maxLine;
 
-						break;
-					}
-				}
+				// shift b right by 1 byte
+				const __m128i shifted = _mm_bsrli_si128(duplicate, 1);
+
+				// compare lt
+				const __m128i compare = _mm_cmplt_epi8(maxLine, shifted);
+
+				// get movemask
+				const int movemask = _mm_movemask_epi8(compare);
+
+				// modify movmask so zero becomes 1<<16
+
+				// get bitindex
+				const int bitIndex = _tzcnt_u32(movemask);
+
+				const uint64_t shiftedIndex = static_cast<uint64_t>(1) << bitIndex;
+				const int shiftedIndexU32 = static_cast<uint32_t>(shiftedIndex);
+				// calc blend mask using index (_mm_blendv_epi8, 0=a, 1=b, bit7 per byte)
+				const int newMask = (shiftedIndexU32 - 1) ^ -1;
+
+				const __m128i mask = bitMaskToByteMask16(newMask);
+
+				const __m128i res = _mm_blendv_epi8(maxLine, shifted, mask);
+
+				maxLine = res;
 			}
 
-			long long total = 0;
-			for (uint8_t i = 0; i < TargetLength; i++)
-			{
-				total *= 10;
-				total += maxLine[i];
-			}
+			// Load the data
+			__m256i loaded256 = _mm256_zextsi128_si256(maxLine);
+
+			// powers of 10
+			// b11 = 1
+			// b10 = 10
+			// b9  = 100
+			// b8  = 1000
+			// b7  = 10000
+			// b6  = 100000
+			// b5  = 1000000
+			// b4  = 10000000
+			// b3  = 100000000
+			// b2  = 1000000000
+			// b1  = 10000000000
+			// b0  = 100000000000
+
+			//   10    1   10    1   10    1   10    1  100   10   10    1
+			// *+ (_mm256_maddubs_epi16)
+			//   b0   b1   b2   b3   b4   b5   b6   b7   b8   b9  b10  b11
+			// =
+			//      s0        s1        s2        s3        s4        s5
+			// *+ (_mm256_madd_epi16)
+			//     100         1       100         1        10         1
+			// =
+			//           i0                  i1                  i2
+			// * (_mm256_mul_epu32)
+			//    100000000               10000                   1
+			// =
+			//           l0                  l1                  l2
+
+			const __m256i m0 = _mm256_setr_epi8(
+				10,
+				1,
+				10,
+				1,
+				10,
+				1,
+				10,
+				1,
+				100,
+				10,
+				10,
+				1,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0);
+
+			const __m256i values16Bit = _mm256_maddubs_epi16(loaded256, m0);
+
+			const __m256i m1 = _mm256_setr_epi16(100, 1, 100, 1, 10, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+			const __m256i values32Bit = _mm256_madd_epi16(values16Bit, m1);
+
+			const __m256i m2 = _mm256_setr_epi64x(100000000, 10000, 1, 0);
+
+			// _mm256_mul_epu32 takes 64-bit numbers but only uses the lower 32-bits
+			const __m256i value64Bit = _mm256_mul_epu32(_mm256_cvtepu32_epi64(_mm256_castsi256_si128(values32Bit)), m2);
+
+			long long total = _mm256_extract_epi64(value64Bit, 0) + _mm256_extract_epi64(value64Bit, 1) +
+				_mm256_extract_epi64(value64Bit, 2);
 
 			part2 += total;
 		}
