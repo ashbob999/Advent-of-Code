@@ -17,16 +17,6 @@ from utils import *
 
 data = parsefile(file_name, [[int, ","], "\n"])
 
-raw = """7,1
-11,1
-11,7
-9,7
-9,5
-2,5
-2,3
-7,3"""
-#data = parse(raw, [[int, ","], "\n"])
-
 
 corners = data.copy()
 print(len(corners))
@@ -48,13 +38,6 @@ def part1():
 	
 	print(mv)
 	return ma
-
-
-
-class Point:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
 
 
 cache = {}
@@ -112,98 +95,6 @@ def part2():
 
 	pip = point_in_polygon
 
-	for i in range(len(corners)):
-		print("i", i)
-		for j in range(i+1, len(corners)):
-			a = corners[i]
-			b = corners[j]
-			
-			tl = (min(a[0], b[0]), min(a[1], b[1]))
-			tr = (max(a[0], b[0]), min(a[1], b[1]))
-			bl = (min(a[0], b[0]), max(a[1], b[1]))
-			br = (max(a[0], b[0]), max(a[1], b[1]))
-			
-			dx = tr[0] - tl[0] +1
-			dy = bl[1] - tl[1] +1
-			
-			area = dx * dy
-			if area <= ma:
-				print("less area", a,b)
-				continue
-			
-			print(tl, tr, bl, br)
-			
-			valid = True
-			if dx > 2 and dy > 2:
-				for v in corners:
-					vx, vy = v
-					if vx > tl[0] and vx < tr[0] and vy > tl[1] and vy < bl[1]:
-						valid = False
-						print(v)
-						break
-			
-			if not valid:
-				continue
-			
-			# will this break
-			if dx < 3 or dy < 3:
-				continue
-			
-			valid = True
-			for x in range(tl[0]+1, tr[0]):
-				p = (x, tl[1]+1)
-				if not pip(p, corners):
-					valid = False
-					break
-			
-			if not valid:
-				continue
-			
-			for y in range(tl[1]+1, bl[1]):
-				p = (tl[0]+1, y)
-				if not pip(p, corners):
-					valid = False
-					break
-			
-			if not valid:
-				continue
-				
-
-			"""
-			if tl != a and tl != b and not pip(tl, corners):
-				continue
-			if tr != a and tr != b and not pip(tr, corners):
-				continue
-			if bl != a and bl != b and not pip(bl, corners):
-				continue
-			if br != a and br != b and not pip(br, corners):
-				continue
-			"""
-				
-			ma = area
-			mv = (a, b)
-
-
-	print(mv)
-	return ma
-
-
-
-
-
-
-
-def part20():
-	tl_ = [min([v[0] for v in corners]), min(v[1] for v in corners)]
-	br_ = [max(v[0] for v in corners), max(v[1] for v in corners)]
-	
-	print(tl_, br_)
-
-	ma = 0
-	mv = None
-
-	pip = point_in_polygon
-
 	valids = []
 
 	for i in range(len(corners)):
@@ -221,9 +112,6 @@ def part20():
 			dy = bl[1] - tl[1] +1
 			
 			area = dx * dy
-			if area <= ma:
-				#print("less area", a,b)
-				continue
 			
 			#print(tl, tr, bl, br)
 			
@@ -245,40 +133,6 @@ def part20():
 			
 			valids.append((tl, tr, bl, br, dx, dy, area))
 			continue
-			
-			valid = True
-			for x in range(tl[0]+1, tr[0]):
-				p = (x, tl[1]+1)
-				if not pip(p, corners):
-					valid = False
-					break
-			
-			if not valid:
-				continue
-			
-			for y in range(tl[1]+1, bl[1]):
-				p = (tl[0]+1, y)
-				if not pip(p, corners):
-					valid = False
-					break
-			
-			if not valid:
-				continue
-				
-
-			"""
-			if tl != a and tl != b and not pip(tl, corners):
-				continue
-			if tr != a and tr != b and not pip(tr, corners):
-				continue
-			if bl != a and bl != b and not pip(bl, corners):
-				continue
-			if br != a and br != b and not pip(br, corners):
-				continue
-			"""
-				
-			ma = area
-			mv = (a, b)
 
 	print(len(valids))
 	valids = sorted(valids, key=lambda x: x[6], reverse=True)
@@ -291,23 +145,6 @@ def part20():
 		
 		valid = True
 		
-		"""
-		for x in range(tl[0]+1, tr[0]):
-			p = (x, tl[1]+1)
-			if not pip(p, corners):
-				valid = False
-				break
-		
-		if not valid:
-			continue
-		
-		for y in range(tl[1]+1, bl[1]):
-			p = (tl[0]+1, y)
-			if not pip(p, corners):
-				valid = False
-				break
-		"""
-		
 		for d in range(1, min(dx, dy) -1):
 			p = (tl[0]+d, tl[1]+d)
 			if not pip(p, corners):
@@ -317,8 +154,6 @@ def part20():
 		if not valid:
 			continue
 		
-		#print("True after check diag")
-		
 		dd = [0, 0]
 		if dx != dy:
 			if dx < dy:
@@ -327,7 +162,6 @@ def part20():
 				dd[0] = 1
 			
 			for d in range(min(dx, dy)-2, max(dx, dy)-2):
-				print(d)
 				p = (tl[0] + d*dd[0]+1, tl[1] + d*dd[1]+1)
 				if not pip(p, corners):
 					valid = False
@@ -349,5 +183,4 @@ def part20():
 
 
 p1()
-#p2()
-print(part20())
+p2()
