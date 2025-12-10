@@ -22,7 +22,7 @@ data = parsefile(file_name, "\n")
 raw = """[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
 [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}"""
-data = parse(raw, "\n")
+#data = parse(raw, "\n")
 
 jolts = []
 for d in data:
@@ -142,6 +142,7 @@ def bfs2(start, btns):
 
 
 import sympy as sp
+import z3
 
 def sz3(btns, target):
 	vals = []
@@ -155,10 +156,13 @@ def sz3(btns, target):
 	print(vals)
 	
 	sbls = []
+	conds = []
 	for i in range(len(vals)):
 		c = chr(ord("a") + i)
-		sbl = sp.symbols(c)
+		#sbl = sp.symbols(c)
+		sbl = z3.Int(c)
 		sbls.append(sbl)
+		conds.append(sbl >= 0)
 	
 	eqs = []
 	for ei in range(len(target)):
@@ -168,15 +172,61 @@ def sz3(btns, target):
 				pe = sbls[i] * v[ei]
 			else:
 				pe = pe + (sbls[i] * v[ei])
-			print("pe", pe)
+			#print("pe", pe)
 		
-		eq = sp.Eq(pe, target[ei])
+		#eq = sp.Eq(pe, target[ei])
+		#eq = sp.Eq(pe - target[ei], 0)
+		eq = pe == target[ei]
 		print(eq)
+		eqs.append(eq)
 	
-	res = sp.solve(eqs, sbls)
-	print(res)
-	
+	#res = sp.solve(eqs, sbls)
+	#res = z3.solve(*conds, *eqs)
+    
+	"""
+	op = z3.Optimize()
+	for eq in eqs:
+		op.add(eq)
+	for cond in conds:
+		op.add(cond)
+	"""
+	minf = sbls[0]
+	for sbl in sbls[1:]:
+		minf = minf + sbl
+
+	print(minf)
+
+	#res = op.minimize(minf)
+	min_sol = 100000000000000000000
+    
+	solver = z3.Solver()
+	for eq in eqs:
+		solver.add(eq)
+	for cond in conds:
+		solver.add(cond)
+    
+	while solver.check() == z3.sat:
+		model = solver.model()
+		print("model", model)
+		min_sol = sum(model[sbl].as_long() for sbl in sbls)
+		solver.add(minf < min_sol)
+    
+	"""
+	res = z3.solve(*conds, *eqs)
 	return 0
+	print("fisrt", res)
+	if res != None:
+		min_sol = sum(res.keys())
+		while res != None:
+			res = z3.solve(*conds, *eqs, minf < min_sol)
+			if res != None:
+				min_sol = sum(res.keys())
+			print("loop", res)
+	"""
+
+	print("end",min_sol)
+	
+	return min_sol
 
 
 
@@ -187,7 +237,7 @@ def part2():
 		#res = bfs2(j[2], j[1])
 		res = sz3(j[1], j[2])
 		print()
-		break
+		#break
 		s += res
 	return s
 
