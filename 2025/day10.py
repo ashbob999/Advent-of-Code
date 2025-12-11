@@ -22,7 +22,7 @@ data = parsefile(file_name, "\n")
 raw = """[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
 [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}"""
-#data = parse(raw, "\n")
+data = parse(raw, "\n")
 
 jolts = []
 for d in data:
@@ -36,8 +36,7 @@ for d in data:
 	jr = list(map(int, parts[-1][1:-1].split(",")))
 	
 	jolt = (ind, btns, jr)
-	jolts.append(jolt)
-	#print(jolt)
+	jolts.append(jolt)=
 
 print(len(jolts))
 
@@ -95,53 +94,6 @@ def part1():
 	return s
 
 
-
-def close2(val):
-	return sum(val)
-
-def press2(val, btns):
-	res = val[:]
-	for btn in btns:
-		res[btn] -= 1
-	return res
-	
-def check2(val):
-	return all(v == 0 for v in val)
-
-def fail(val):
-	return any(v < 0 for v in val)
-
-def bfs2(start, btns):
-	
-	seen = {}
-	#to_check = [(0, close2(start), start)]
-	to_check = [(close2(start), 0, start)]
-	
-	while len(to_check):
-		#cp, cc, cv = heappop(to_check)
-		cc, cp, cv = heappop(to_check)
-
-		seen[tuple(cv)] = cp
-
-		for btn in btns:
-			nv = press2(cv, btn)
-			dist = close2(nv)
-			
-			if tuple(nv) in seen:
-				if seen[tuple(nv)] < cp+1:
-					continue
-			
-			if check2(nv):
-				return cp+1
-			
-			if fail(nv):
-				continue
-			
-			#heappush(to_check, (cp+1, dist, nv))
-			heappush(to_check, (dist, cp+1, nv))
-
-
-import sympy as sp
 import z3
 
 def sz3(btns, target):
@@ -159,7 +111,6 @@ def sz3(btns, target):
 	conds = []
 	for i in range(len(vals)):
 		c = chr(ord("a") + i)
-		#sbl = sp.symbols(c)
 		sbl = z3.Int(c)
 		sbls.append(sbl)
 		conds.append(sbl >= 0)
@@ -172,31 +123,18 @@ def sz3(btns, target):
 				pe = sbls[i] * v[ei]
 			else:
 				pe = pe + (sbls[i] * v[ei])
-			#print("pe", pe)
-		
-		#eq = sp.Eq(pe, target[ei])
-		#eq = sp.Eq(pe - target[ei], 0)
+	
 		eq = pe == target[ei]
 		print(eq)
 		eqs.append(eq)
-	
-	#res = sp.solve(eqs, sbls)
-	#res = z3.solve(*conds, *eqs)
     
-	"""
-	op = z3.Optimize()
-	for eq in eqs:
-		op.add(eq)
-	for cond in conds:
-		op.add(cond)
-	"""
+
 	minf = sbls[0]
 	for sbl in sbls[1:]:
 		minf = minf + sbl
 
 	print(minf)
 
-	#res = op.minimize(minf)
 	min_sol = 100000000000000000000
     
 	solver = z3.Solver()
@@ -210,19 +148,6 @@ def sz3(btns, target):
 		print("model", model)
 		min_sol = sum(model[sbl].as_long() for sbl in sbls)
 		solver.add(minf < min_sol)
-    
-	"""
-	res = z3.solve(*conds, *eqs)
-	return 0
-	print("fisrt", res)
-	if res != None:
-		min_sol = sum(res.keys())
-		while res != None:
-			res = z3.solve(*conds, *eqs, minf < min_sol)
-			if res != None:
-				min_sol = sum(res.keys())
-			print("loop", res)
-	"""
 
 	print("end",min_sol)
 	
@@ -234,10 +159,8 @@ def part2():
 	s=  0
 	for i, j in enumerate(jolts):
 		print(i)
-		#res = bfs2(j[2], j[1])
 		res = sz3(j[1], j[2])
 		print()
-		#break
 		s += res
 	return s
 
