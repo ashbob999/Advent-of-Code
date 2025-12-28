@@ -1,0 +1,169 @@
+# @formatter:off
+from os.path import isfile, join as path_join
+from sys import path as sys_path
+sys_path.insert(1, path_join(sys_path[0], '..'))
+file_name = path_join('input', 'day10.txt')
+def to_list(mf=int, sep='\n'): return [mf(x) for x in open(file_name).read().split(sep) if x]
+def to_gen(mf=int, sep='\n'): return (mf(x) for x in open(file_name).read().split(sep) if x)
+def p1(*args): ans = part1(*args); print(ans); return ans
+def p2(*args): ans = part2(*args); print(ans); return ans
+
+if not isfile(file_name):
+	from aoc import get_input_file
+	get_input_file(session_path=['..', '.env'])
+# @formatter:on
+
+from utils import *
+
+from heapq import *
+
+data = parsefile(file_name, "\n")
+
+raw = """[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
+[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
+[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}"""
+data = parse(raw, "\n")
+
+jolts = []
+for d in data:
+	parts = d.split()
+	
+	ind_str = list(parts[0][1:-1])
+	ind = [c == "#" for c in ind_str]
+	
+	btns = [list(map(int, v[1:-1].split(","))) for v in parts[1:-1]]
+	
+	jr = list(map(int, parts[-1][1:-1].split(",")))
+	
+	jolt = (ind, btns, jr)
+	jolts.append(jolt)=
+
+print(len(jolts))
+
+def close(val):
+	s = 0
+	for v in val:
+		if v:
+			s += 1
+	return s
+
+
+def press(val, btns):
+	res = val[:]
+	for btn in btns:
+		res[btn] = not res[btn]
+	return res
+
+def check(val):
+	return all(v == False for v in val)
+
+def bfs(start, btns):
+	
+	seen = {}
+	to_check = [(0, close(start), start, None)]
+	
+	while len(to_check):
+		cp, cc, cv, pb = heappop(to_check)
+
+		seen[tuple(cv)] = cp
+
+		for btn in btns:
+			if btn == pb:
+				continue
+			
+			nv = press(cv, btn)
+			dist = close(nv)
+			
+			if tuple(nv) in seen:
+				if seen[tuple(nv)] < cp+1:
+					continue
+			
+			if check(nv):
+				return cp+1
+			
+			heappush(to_check, (cp+1, dist, nv, btn))
+
+
+
+def part1():
+	s=  0
+	for i, j in enumerate(jolts):
+		print(i)
+		res = bfs(j[0], j[1])
+		s += res
+	return s
+
+
+import z3
+
+def sz3(btns, target):
+	vals = []
+	for v in btns:
+		val = [0] * len(target)
+		for idx in v:
+			val[idx] = 1
+		vals.append(val)
+		
+	print(target, btns)
+	print(vals)
+	
+	sbls = []
+	conds = []
+	for i in range(len(vals)):
+		c = chr(ord("a") + i)
+		sbl = z3.Int(c)
+		sbls.append(sbl)
+		conds.append(sbl >= 0)
+	
+	eqs = []
+	for ei in range(len(target)):
+		pe = None
+		for i, v in enumerate(vals):
+			if pe is None:
+				pe = sbls[i] * v[ei]
+			else:
+				pe = pe + (sbls[i] * v[ei])
+	
+		eq = pe == target[ei]
+		print(eq)
+		eqs.append(eq)
+    
+
+	minf = sbls[0]
+	for sbl in sbls[1:]:
+		minf = minf + sbl
+
+	print(minf)
+
+	min_sol = 100000000000000000000
+    
+	solver = z3.Solver()
+	for eq in eqs:
+		solver.add(eq)
+	for cond in conds:
+		solver.add(cond)
+    
+	while solver.check() == z3.sat:
+		model = solver.model()
+		print("model", model)
+		min_sol = sum(model[sbl].as_long() for sbl in sbls)
+		solver.add(minf < min_sol)
+
+	print("end",min_sol)
+	
+	return min_sol
+
+
+
+def part2():
+	s=  0
+	for i, j in enumerate(jolts):
+		print(i)
+		res = sz3(j[1], j[2])
+		print()
+		s += res
+	return s
+
+
+#p1()
+p2()
