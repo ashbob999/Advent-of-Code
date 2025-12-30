@@ -4,6 +4,8 @@ project(aoc_2025_cpp)
 
 set(CMAKE_CXX_STANDARD 20)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 file(GLOB INPUT_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/../../2025/input/*.txt
 )
